@@ -4,6 +4,7 @@ import de.arnomann.martin.blobby3d.RunConfigurations;
 import de.arnomann.martin.blobby3d.event.*;
 import de.arnomann.martin.blobby3d.render.RenderAPI;
 import de.arnomann.martin.blobby3d.render.Renderer;
+import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -19,6 +20,7 @@ public class Window {
     private int height;
     private int maxFramerate;
     private boolean vSyncEnabled;
+    private boolean wireframe;
 
     private boolean started;
 
@@ -28,6 +30,7 @@ public class Window {
         this.height = runConfig.height;
         this.maxFramerate = runConfig.maxFramerate;
         this.vSyncEnabled = runConfig.vSyncEnabled;
+        this.wireframe = runConfig.wireframe;
 
         windowId = createWindow();
         if(windowId == 0) {
@@ -36,9 +39,9 @@ public class Window {
             return;
         }
 
+        glfwMakeContextCurrent(windowId);
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(windowId, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
-        glfwMakeContextCurrent(windowId);
         glfwSwapInterval(vSyncEnabled ? 1 : 0);
 
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
@@ -46,6 +49,8 @@ public class Window {
 
             glEnable(GL_TEXTURE_2D);
             glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
 
             glViewport(0, 0, width, height);
             glClearColor(0.2f, 0.3f, 0.3f, 1f);
@@ -65,8 +70,8 @@ public class Window {
 
     private long createWindow() {
         glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
-            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -128,6 +133,10 @@ public class Window {
         return height;
     }
 
+    public Vector2i getSize() {
+        return new Vector2i(width, height);
+    }
+
     public float getAspectRatio() {
         return (float) width / height;
     }
@@ -147,6 +156,17 @@ public class Window {
 
     public boolean isVSyncEnabled() {
         return vSyncEnabled;
+    }
+
+    public void setWireframe(boolean wireframe) {
+        this.wireframe = wireframe;
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+        }
+    }
+
+    public boolean isWireframe() {
+        return wireframe;
     }
 
 }

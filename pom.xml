@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20230227</version>
+            <version>20231013</version>
         </dependency>
 
         <!-- LWJGL -->
@@ -95,12 +95,12 @@
             <artifactId>lwjgl-stb</artifactId>
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
-        <!-- THIS HAS BEEN REPLACED BY CUSTOM MATH LIBRARY
+        <!-- THIS MAY BE REPLACED BY CUSTOM MATH LIBRARY -->
         <dependency>
             <groupId>org.joml</groupId>
             <artifactId>joml</artifactId>
             <version>${joml.version}</version>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
 </project>

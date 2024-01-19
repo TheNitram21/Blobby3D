@@ -1,12 +1,18 @@
 package de.arnomann.martin.blobby3d.core;
 
 import de.arnomann.martin.blobby3d.RunConfigurations;
+import de.arnomann.martin.blobby3d.entity.Entity;
+import de.arnomann.martin.blobby3d.level.Block;
+import de.arnomann.martin.blobby3d.level.Level;
 import de.arnomann.martin.blobby3d.logging.Logger;
-import de.arnomann.martin.blobby3d.math.Vector2;
 import de.arnomann.martin.blobby3d.render.RenderAPI;
 import de.arnomann.martin.blobby3d.render.Renderer;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import de.arnomann.martin.blobby3d.render.texture.Texture;
+import org.joml.Quaternionf;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.json.JSONObject;
 import org.lwjgl.BufferUtils;
 
 import java.io.*;
@@ -21,12 +27,17 @@ import static org.lwjgl.opengl.GL33.*;
 
 public class Blobby3D {
 
+    public static final String MAPS_PATH = "maps/";
     public static final String TEXTURES_PATH = "textures/";
     public static final String SHADERS_PATH = "shaders/";
+    public static final String BINARIES_PATH = "bin/";
 
     private static Window window;
     private static Logger logger;
     private static final Map<String, ITexture> cachedTextures = new HashMap<>();
+    private static final Map<String, Map<String, String>> entityData = new HashMap<>();
+
+    private static Level level;
 
     private static RenderAPI currentRenderAPI;
 
@@ -34,6 +45,7 @@ public class Blobby3D {
 
     public static void run(RunConfigurations runConfig) {
         logger = new Logger();
+        loadEntities("bin/entities.json");
 
         if(!glfwInit()) {
             logger.error("An error occurred whilst trying to initialize GLFW.");
@@ -51,6 +63,7 @@ public class Blobby3D {
             return;
         }
 
+        Block.initialize();
         Renderer.initialize();
         Input.initialize();
 
@@ -74,6 +87,27 @@ public class Blobby3D {
         }
 
         return content.toString();
+    }
+
+    public static void loadEntities(String entitiesPath) {
+        JSONObject json = new JSONObject(readFile(entitiesPath));
+
+        for(Object entityObject : json.getJSONArray("Entities")) {
+            JSONObject entityJSON = (JSONObject) entityObject;
+            String className = entityJSON.getString("ClassName");
+
+            Map<String, String> parametersMap = new HashMap<>();
+            JSONObject parametersJSON = entityJSON.getJSONObject("Parameters");
+            for(String parameterName : parametersJSON.keySet()) {
+                parametersMap.put(parameterName, parametersJSON.getString(parameterName));
+            }
+
+            entityData.put(className, parametersMap);
+        }
+    }
+
+    public static Map<String, Map<String, String>> getEntityData() {
+        return entityData;
     }
 
     public static ITexture getTexture(String filename) {
@@ -100,19 +134,39 @@ public class Blobby3D {
         cachedTextures.clear();
     }
 
+    public static Entity instantiateEntity(String className, Vector3f position, Quaternionf rotation,
+                                           Map<String, Object> parameters) throws ReflectiveOperationException {
+        JSONObject entitiesJSON = new JSONObject(readFile("bin/entities.json"));
+        String internalClassName = null;
+
+        for(Object entityObject : entitiesJSON.getJSONArray("Entities")) {
+            JSONObject entityJSON = (JSONObject) entityObject;
+
+            if(entityJSON.getString("ClassName").equals(className))
+                internalClassName = entityJSON.getString("InternalClassName");
+        }
+
+        if(internalClassName == null)
+            return null;
+
+        Class<?> entityClass = Class.forName(internalClassName);
+        return (Entity) entityClass.getConstructor(Vector3f.class, Quaternionf.class, Map.class)
+                .newInstance(position, rotation, parameters);
+    }
+
     public static void setCursorVisible(boolean visible) {
         glfwSetInputMode(window.getId(), GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
     }
 
-    public static void setCursorPosition(Vector2 position) {
+    public static void setCursorPosition(Vector2f position) {
         glfwSetCursorPos(window.getId(), position.x, position.y);
     }
 
-    public static Vector2 getCursorPosition() {
+    public static Vector2f getCursorPosition() {
         DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window.getId(), xPos, yPos);
-        return new Vector2((float) xPos.get(0), (float) yPos.get(0));
+        return new Vector2f((float) xPos.get(0), (float) yPos.get(0));
     }
 
     public static String getOpenGLError() {
@@ -125,6 +179,17 @@ public class Blobby3D {
         if(currentRenderAPI != RenderAPI.VULKAN)
             return null;
         return null;
+    }
+
+    public static void setLevel(Level level) {
+        if(Blobby3D.level != null)
+            Blobby3D.level.getEntities().forEach(Entity::disable);
+
+        Blobby3D.level = level;
+    }
+
+    public static Level getLevel() {
+        return level;
     }
 
     public static Window getWindow() {

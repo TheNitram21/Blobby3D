@@ -1,7 +1,12 @@
 package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
-import de.arnomann.martin.blobby3d.math.Matrix4;
+import de.arnomann.martin.blobby3d.entity.PointLight;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.opengl.GL33.*;
 
@@ -14,6 +19,16 @@ public class Shader {
         if(id == -1) {
             Blobby3D.getLogger().error("An error occured whilst trying to create the shader!");
         }
+    }
+
+    public static Shader createFromPath(String vertexPath, String fragmentPath) {
+        return new Shader(Blobby3D.readFile(Blobby3D.SHADERS_PATH + vertexPath),
+                Blobby3D.readFile(Blobby3D.SHADERS_PATH + fragmentPath));
+    }
+
+    public static Shader createFromName(String shaderName) {
+        return new Shader(Blobby3D.readFile(Blobby3D.SHADERS_PATH + shaderName + ".vert"),
+                Blobby3D.readFile(Blobby3D.SHADERS_PATH + shaderName + ".frag"));
     }
 
     private int createShader(String vertexSource, String fragmentSource) {
@@ -83,6 +98,15 @@ public class Shader {
         }
     }
 
+    public void setUniformVector3f(String name, Vector3f vector) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            if(location != -1) {
+                glUniform3f(location, vector.x, vector.y, vector.z);
+            }
+        }
+    }
+
     public void setUniform1i(String name, int value) {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             int location = glGetUniformLocation(id, name);
@@ -110,24 +134,34 @@ public class Shader {
         }
     }
 
-    public void setUniformMatrix4(String name, Matrix4 matrix) {
+    public void setUniformMatrix3f(String name, Matrix3f matrix) {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             int location = glGetUniformLocation(id, name);
-            if(location != -1) {
-                glUniformMatrix4fv(location, false, matrix.toFloatBuffer());
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                if(location != -1) {
+                    glUniformMatrix3fv(location, false, matrix.get(stack.mallocFloat(9)));
+                }
             }
         }
     }
-//    public void setUniformMatrix4(String name, Matrix4f matrix) {
-//        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
-//            int location = glGetUniformLocation(id, name);
-//            try(MemoryStack stack = MemoryStack.stackPush()) {
-//                if(location != -1) {
-//                    glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(16)));
-//                }
-//            }
-//        }
-//    }
+
+    public void setUniformMatrix4f(String name, Matrix4f matrix) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                if(location != -1) {
+                    glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(16)));
+                }
+            }
+        }
+    }
+
+    public void setUniformPointLight(String name, PointLight pointLight) {
+        setUniformVector3f(name + ".position", pointLight.getPosition());
+        setUniformVector3f(name + ".color", pointLight.getColor());
+        setUniform3f(name + ".constLinearQuad", pointLight.getConstant(), pointLight.getLinear(),
+                pointLight.getQuadratic());
+    }
 
     public void bind() {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL)

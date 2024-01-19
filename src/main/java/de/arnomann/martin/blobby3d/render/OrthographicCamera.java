@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class PerspectiveCamera implements Camera {
+public class OrthographicCamera implements Camera {
 
     private Matrix4f projectionMatrix;
     private Matrix4f viewMatrix;
@@ -13,11 +13,11 @@ public class PerspectiveCamera implements Camera {
     private Vector3f position;
     private Quaternionf rotation;
 
-    public PerspectiveCamera(float fovy, float aspectRatio, float near, float far) {
+    public OrthographicCamera(float left, float right, float bottom, float top, float near, float far) {
         position = new Vector3f();
         rotation = new Quaternionf();
 
-        projectionMatrix = new Matrix4f().perspectiveLH((float) Math.toRadians(fovy), aspectRatio, near, far);
+        projectionMatrix = new Matrix4f().orthoLH(left, right, bottom, top, near, far);
         viewMatrix = new Matrix4f();
         viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
     }

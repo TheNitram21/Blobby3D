@@ -2,12 +2,13 @@
 
 layout(location = 0) in vec3 in_Position;
 layout(location = 1) in vec2 in_TextureCoords;
+layout(location = 3) in vec3 in_Normals;
 
-uniform mat4 u_ViewProjectionMatrix;
+uniform mat4 u_ModelViewProjectionMatrix;
 
 out vec2 pass_TextureCoords;
 
 void main() {
     pass_TextureCoords = in_TextureCoords;
-    gl_Position = u_ViewProjectionMatrix * vec4(in_Position, 1.0);
+    gl_Position = u_ModelViewProjectionMatrix * vec4(in_Position, 1.0);
 }

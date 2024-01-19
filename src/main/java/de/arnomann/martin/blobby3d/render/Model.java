@@ -1,6 +1,7 @@
 package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
+import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -11,14 +12,15 @@ import static org.lwjgl.opengl.GL33.*;
 public class Model {
 
     private int count;
-    private int vbo, tbo, ebo;
+    private int vbo, tbo, nbo, ebo;
     private final boolean isDynamic;
 
-    public Model(float[] vertices, float[] textureCoords, int[] indices) {
-        this(vertices, textureCoords, indices, false);
+    public Model(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
+        this(vertices, textureCoords, normals, indices, false);
     }
 
-    public Model(float[] vertices, float[] textureCoords, int[] indices, boolean isDynamic) {
+    public Model(float[] vertices, float[] textureCoords, float[] normals, int[] indices,
+                 boolean isDynamic) {
         this.count = indices.length;
         this.isDynamic = isDynamic;
 
@@ -37,6 +39,13 @@ public class Model {
             glBindBuffer(GL_ARRAY_BUFFER, tbo);
             glBufferData(GL_ARRAY_BUFFER, textureCoordsBuffer, isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 
+            FloatBuffer normalsBuffer = BufferUtils.createFloatBuffer(normals.length);
+            normalsBuffer.put(normals);
+            normalsBuffer.flip();
+            nbo = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, nbo);
+            glBufferData(GL_ARRAY_BUFFER, normalsBuffer, isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+
             IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
             indicesBuffer.put(indices);
             indicesBuffer.flip();
@@ -53,22 +62,39 @@ public class Model {
         if(!isDynamic)
             return;
 
-        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        verticesBuffer.put(vertices);
-        verticesBuffer.flip();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_DYNAMIC_DRAW);
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
+            verticesBuffer.put(vertices);
+            verticesBuffer.flip();
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_DYNAMIC_DRAW);
+        }
     }
 
     public void setTextureCoords(float[] textureCoords) {
         if(!isDynamic)
             return;
 
-        FloatBuffer textureCoordsBuffer = BufferUtils.createFloatBuffer(textureCoords.length);
-        textureCoordsBuffer.put(textureCoords);
-        textureCoordsBuffer.flip();
-        glBindBuffer(GL_ARRAY_BUFFER, tbo);
-        glBufferData(GL_ARRAY_BUFFER, textureCoordsBuffer, GL_DYNAMIC_DRAW);
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            FloatBuffer textureCoordsBuffer = BufferUtils.createFloatBuffer(textureCoords.length);
+            textureCoordsBuffer.put(textureCoords);
+            textureCoordsBuffer.flip();
+            glBindBuffer(GL_ARRAY_BUFFER, tbo);
+            glBufferData(GL_ARRAY_BUFFER, textureCoordsBuffer, GL_DYNAMIC_DRAW);
+        }
+    }
+
+    public void setNormals(float[] normals) {
+        if(!isDynamic)
+            return;
+
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            FloatBuffer normalsBuffer = BufferUtils.createFloatBuffer(normals.length);
+            normalsBuffer.put(normals);
+            normalsBuffer.flip();
+            glBindBuffer(GL_ARRAY_BUFFER, nbo);
+            glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_DYNAMIC_DRAW);
+        }
     }
 
     public void setIndices(int[] indices) {
@@ -77,11 +103,13 @@ public class Model {
 
         count = indices.length;
 
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-        indicesBuffer.put(indices);
-        indicesBuffer.flip();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_DYNAMIC_DRAW);
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+            indicesBuffer.put(indices);
+            indicesBuffer.flip();
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_DYNAMIC_DRAW);
+        }
     }
 
     public int getCount() {
@@ -94,6 +122,10 @@ public class Model {
 
     public int getTBO() {
         return tbo;
+    }
+
+    public int getNBO() {
+        return nbo;
     }
 
     public int getEBO() {

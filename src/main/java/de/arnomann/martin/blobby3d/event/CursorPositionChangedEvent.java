@@ -1,12 +1,12 @@
 package de.arnomann.martin.blobby3d.event;
 
-import de.arnomann.martin.blobby3d.math.Vector2;
+import org.joml.Vector2f;
 
 public class CursorPositionChangedEvent extends Event {
 
-    public final Vector2 newPosition;
+    public final Vector2f newPosition;
 
-    public CursorPositionChangedEvent(Vector2 newPosition) {
+    public CursorPositionChangedEvent(Vector2f newPosition) {
         this.newPosition = newPosition;
     }
 

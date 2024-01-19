@@ -1,6 +1,5 @@
 package de.arnomann.martin.blobby3d.math;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Vector2 {

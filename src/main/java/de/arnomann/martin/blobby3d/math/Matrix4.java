@@ -45,11 +45,10 @@ public class Matrix4 {
     }
 
     public static Matrix4 perspective(float fovx, float fovy, float near, float far) {
-        float PI_180TH = (float) Math.PI / 180f;
-        return new Matrix4(1f / (fovx / 2f * PI_180TH), 0f, 0f, 0f,
-                0f, 1f / (fovy / 2f * PI_180TH), 0f, 0f,
-                0f, 0f, -far / (far - near), -1f,
-                0f, 0f, -(far * near) / (far - near), 0f);
+        return new Matrix4((float) (1f / Math.tan(fovx * 0.5f)), 0f, 0f, 0f,
+                0f, (float) (1f / Math.tan(fovy * 0.5f)), 0f, 0f,
+                0f, 0f, -(far + near) / (far - near), -(2f * far * near) / (far - near),
+                0f, 0f, -1f, 0f);
     }
 
     public Matrix4 set(int i, int j, float val) {
@@ -177,8 +176,14 @@ public class Matrix4 {
         return mul(new Matrix4().set(0, 0, scale.x).set(1, 1, scale.y).set(2, 2, scale.z));
     }
 
-    public Matrix4 rotate(Quaternion rotation) {
-        return this;
+    public Matrix4 rotate(Quaternion q) {
+        return new Matrix4(1f - 2f * q.y * q.y - 2f * q.z * q.z, 2f * q.x * q.y - 2f * q.z * q.w,
+                2f * q.x * q.z + q.y * q.w, 0f,
+                2f * q.x * q.y + 2f * q.z * q.w, 1f - 2f * q.x * q.x - 2f * q.z * q.z,
+                2f * q.y * q.z - 2f * q.x * q.w, 0f,
+                2f * q.x * q.z - 2f * q.y * q.w, 2f * q.y * q.z + 2f * q.x * q.w,
+                1f - 2f * q.x * q.x - 2f * q.y * q.y, 0f,
+                0f, 0f, 0f, 1f);
     }
 
     public Matrix4 rotateX(float degrees) {
@@ -205,7 +210,7 @@ public class Matrix4 {
     public FloatBuffer toFloatBuffer() {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         for(int i = 0; i < 16; i++) {
-            buffer.put(i, content[i / 4][i % 4]);
+            buffer.put(i, content[i % 4][i / 4]);
         }
         return buffer;
     }

@@ -2,7 +2,7 @@ package de.arnomann.martin.blobby3d.math;
 
 public class Quaternion {
 
-    private float x, y, z, w;
+    public float x, y, z, w;
 
     public Quaternion() {
         this(0f, 0f, 0f, 1f);
@@ -19,7 +19,15 @@ public class Quaternion {
         this(q.x, q.y, q.z, q.w);
     }
 
+    public static Quaternion fromEulerAngles(Vector3 eulerAngles) {
+        return fromEulerAngles(eulerAngles.x, eulerAngles.y, eulerAngles.z);
+    }
+
     public static Quaternion fromEulerAngles(float x, float y, float z) {
+        x = (float) Math.toRadians(x);
+        y = (float) Math.toRadians(y);
+        z = (float) Math.toRadians(z);
+
         float xCos = (float) Math.cos(x * 0.5f);
         float xSin = (float) Math.sin(x * 0.5f);
         float yCos = (float) Math.cos(y * 0.5f);
@@ -32,8 +40,21 @@ public class Quaternion {
                               xCos * yCos * zSin - xSin * ySin * zCos,
                               xCos * yCos * zCos + xSin * ySin * zSin);
     }
-    public Vector3 asEulerAngles() {
-        return null; // TODO
+
+    public Vector3 toEulerAngles() {
+        Quaternion q = this;
+        Vector3 eulerAngles = new Vector3();
+
+        eulerAngles.x = (float) Math.atan2(2f * (q.w * q.x + q.y * q.z), 1f - 2f * (q.x * q.x + q.y * q.y));
+        eulerAngles.y = (float) (2f * Math.atan2(Math.sqrt(1f + 2f * (q.w * q.y + q.x * q.z)), Math.sqrt(1f - 2f *
+                (q.w * q.y + q.x * q.z))) - Math.PI / 2f);
+        eulerAngles.z = (float) Math.atan2(2f * (q.w * q.z + q.x * q.y), 1f - 2f * (q.y * q.y + q.z * q.z));
+
+        eulerAngles.x = (float) Math.toDegrees(eulerAngles.x);
+        eulerAngles.y = (float) Math.toDegrees(eulerAngles.y);
+        eulerAngles.z = (float) Math.toDegrees(eulerAngles.z);
+
+        return eulerAngles;
     }
 
     public Quaternion add(Quaternion q) {
@@ -57,7 +78,7 @@ public class Quaternion {
     }
 
     public Vector3 rotate(Vector3 v) {
-        Quaternion vectorAsQuat = new Quaternion(v.x, v.y, v.z, 0);
+        Quaternion vectorAsQuat = new Quaternion(-v.x, v.y, -v.z, 0);
         Quaternion hamilton = hamilton(vectorAsQuat).hamilton(conjugate());
         return new Vector3(hamilton.x, hamilton.y, hamilton.z);
     }

@@ -1,7 +1,14 @@
 package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
-import de.arnomann.martin.blobby3d.render.texture.ITexture;
+import de.arnomann.martin.blobby3d.entity.Entity;
+import de.arnomann.martin.blobby3d.entity.PointLight;
+import de.arnomann.martin.blobby3d.level.Block;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
 
@@ -11,11 +18,11 @@ public class Renderer {
 
     private static boolean initialized;
 
-    private static ITexture texture;
-    private static Model model;
     private static int vao;
+    private static Camera camera;
+    private static Shader shader;
 
-    private static Camera activeCamera;
+    private static List<PointLight> pointLights = new ArrayList<>();
 
     private Renderer() {}
 
@@ -29,78 +36,106 @@ public class Renderer {
 
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
-
-            float[] vertices = new float[] { // CUBE
-                    -0.5f,  0.5f, -0.5f, // FRONT  TOP     LEFT   0
-                     0.5f,  0.5f, -0.5f, // FRONT  TOP     RIGHT  1
-                     0.5f, -0.5f, -0.5f, // FRONT  BOTTOM  RIGHT  2
-                    -0.5f, -0.5f, -0.5f, // FRONT  BOTTOM  LEFT   3
-                    -0.5f,  0.5f,  0.5f, // BACK   TOP     LEFT   4
-                     0.5f,  0.5f,  0.5f, // BACK   TOP     RIGHT  5
-                     0.5f, -0.5f,  0.5f, // BACK   BOTTOM  RIGHT  6
-                    -0.5f, -0.5f,  0.5f  // BACK   BOTTOM  LEFT   7
-            };
-            float[] textureCoords = new float[] {
-                    0f, 1f, // TOP     LEFT
-                    1f, 1f, // TOP     RIGHT
-                    1f, 0f, // BOTTOM  RIGHT
-                    0f, 0f, // BOTTOM  LEFT
-                    0f, 1f, // TOP     LEFT
-                    1f, 1f, // TOP     RIGHT
-                    1f, 0f, // BOTTOM  RIGHT
-                    0f, 0f  // BOTTOM  LEFT
-            };
-            int[] indices = new int[] {
-                    0, 1, 2, // FRONT
-                    2, 3, 0,
-//                    4, 0, 3, // LEFT
-//                    3, 7, 4,
-//                    5, 4, 7, // BACK
-//                    7, 6, 5,
-//                    1, 5, 6, // RIGHT
-//                    6, 2, 1
-            };
-
-            texture = Blobby3D.getTexture("measure");
-            model = new Model(vertices, textureCoords, indices);
+            glEnableVertexAttribArray(2);
 
             float aspectRatio = (float) Blobby3D.getWindow().getWidth() / Blobby3D.getWindow().getHeight();
-            activeCamera = new PerspectiveCamera(70, 70 / aspectRatio, 0.01f, 1000f);
+            camera = new PerspectiveCamera(70, aspectRatio, 0.01f, 1000f);
 
-            defaultShader = new Shader(Blobby3D.readFile(Blobby3D.SHADERS_PATH + "defaultShader.vert"),
-                    Blobby3D.readFile(Blobby3D.SHADERS_PATH + "defaultShader.frag"));
+            defaultShader = Shader.createFromName("litDefault");
+            shader = defaultShader;
         }
 
         initialized = true;
     }
 
     public static void render() {
+        pointLights.clear();
+        for(Entity entity : Blobby3D.getLevel().getEntities()) {
+            if(entity instanceof PointLight)
+                pointLights.add((PointLight) entity);
+        }
+
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            texture.bind(0);
-            defaultShader.bind();
-            defaultShader.setUniform1i("u_Texture", 0);
-            defaultShader.setUniformMatrix4("u_ViewProjectionMatrix", activeCamera.getViewProjectionMatrix());
-            glBindBuffer(GL_ARRAY_BUFFER, model.getVBO());
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
-            glBindBuffer(GL_ARRAY_BUFFER, model.getTBO());
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 8, 0);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model.getEBO());
-            glDrawElements(GL_TRIANGLES, model.getCount(), GL_UNSIGNED_INT, 0);
+            Blobby3D.getLevel().getBlocks().forEach(Renderer::renderBlock);
+            Blobby3D.getLevel().getEntities().forEach(Renderer::renderEntity);
         }
+    }
+
+    public static void renderBlock(Block block) {
+        if(block.texture == null)
+            return;
+
+        shader.bind();
+        block.texture.bind(0);
+        shader.setUniform1i("u_Texture", 0);
+
+        shader.setUniformVector3f("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
+
+        for(int i = 0; i < pointLights.size(); i++)
+            shader.setUniformPointLight("u_PointLights[" + i + "]", pointLights.get(i));
+        shader.setUniform1i("u_PointLightCount", pointLights.size());
+
+        shader.setUniformVector3f("u_CameraPosition", camera.getPosition());
+
+        shader.setUniformMatrix3f("u_NormalMatrix", new Matrix3f(block.getModelMatrix()).invert().transpose());
+        shader.setUniformMatrix4f("u_ModelMatrix", block.getModelMatrix());
+        shader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
+                camera.getViewProjectionMatrix()).mul(block.getModelMatrix()));
+
+        glBindBuffer(GL_ARRAY_BUFFER, block.getModel().getVBO());
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, block.getModel().getTBO());
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 8, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, block.getModel().getNBO());
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, 12, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, block.getModel().getEBO());
+        glDrawElements(GL_TRIANGLES, block.getModel().getCount(), GL_UNSIGNED_INT, 0);
+    }
+
+    public static void renderEntity(Entity entity) {
+        if(entity.getModel() == null)
+            return;
+
+        shader.bind();
+        entity.getTexture().bind(0);
+        shader.setUniform1i("u_Texture", 0);
+
+        shader.setUniformVector3f("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
+
+        for(int i = 0; i < pointLights.size(); i++) {
+            shader.setUniformPointLight("u_PointLights[" + i + "]", pointLights.get(i));
+        }
+        shader.setUniform1i("u_PointLightCount", pointLights.size());
+
+        shader.setUniformVector3f("u_CameraPosition", camera.getPosition());
+
+        shader.setUniformMatrix3f("u_NormalMatrix", new Matrix3f(entity.getModelMatrix()).invert().transpose());
+        shader.setUniformMatrix4f("u_ModelMatrix", entity.getModelMatrix());
+        shader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
+                camera.getViewProjectionMatrix()).mul(entity.getModelMatrix()));
+
+        glBindBuffer(GL_ARRAY_BUFFER, entity.getModel().getVBO());
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, entity.getModel().getTBO());
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 8, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, entity.getModel().getNBO());
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, 12, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, entity.getModel().getEBO());
+        glDrawElements(GL_TRIANGLES, entity.getModel().getCount(), GL_UNSIGNED_INT, 0);
     }
 
     public static Shader getDefaultShader() {
         return defaultShader;
     }
 
-    public static void setActiveCamera(Camera camera) {
-        activeCamera = camera;
+    public static void setCamera(Camera camera) {
+        Renderer.camera = camera;
     }
 
-    public static Camera getActiveCamera() {
-        return activeCamera;
+    public static Camera getCamera() {
+        return camera;
     }
 
 }

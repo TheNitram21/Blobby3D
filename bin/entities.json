@@ -1,0 +1,15 @@
+{
+    "Entities": [
+        {
+            "ClassName": "PointLight",
+            "InternalClassName": "de.arnomann.martin.blobby3d.entity.PointLight",
+            "Parameters": {
+                "Name": "string",
+                "Color": "color_rgb",
+                "Constant": "float",
+                "Linear": "float",
+                "Quadratic": "float"
+            }
+        }
+    ]
+}
