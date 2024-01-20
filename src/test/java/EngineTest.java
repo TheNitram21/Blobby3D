@@ -37,32 +37,33 @@ public class EngineTest implements EventListener {
         Blobby3D.getWindow().setTitle("Blobby3D Test - " + event.fps + " FPS");
 
         float moveSpeed = 3f * (float) event.deltaTime;
-        if(Input.keyPressed(Input.KEY_W))
+        if (Input.keyPressed(Input.KEY_W))
             camera.setPosition(camera.getPosition().add(camera.getForward().mul(moveSpeed)));
-        if(Input.keyPressed(Input.KEY_S))
+        if (Input.keyPressed(Input.KEY_S))
             camera.setPosition(camera.getPosition().add(camera.getForward().mul(-moveSpeed)));
-        if(Input.keyPressed(Input.KEY_A))
+        if (Input.keyPressed(Input.KEY_A))
             camera.setPosition(camera.getPosition().add(camera.getRight().mul(-moveSpeed)));
-        if(Input.keyPressed(Input.KEY_D))
+        if (Input.keyPressed(Input.KEY_D))
             camera.setPosition(camera.getPosition().add(camera.getRight().mul(moveSpeed)));
-        if(Input.keyPressed(Input.KEY_LEFT_SHIFT))
+        if (Input.keyPressed(Input.KEY_LEFT_SHIFT))
             camera.setPosition(camera.getPosition().add(camera.getUp().mul(moveSpeed)));
-        if(Input.keyPressed(Input.KEY_LEFT_CONTROL))
+        if (Input.keyPressed(Input.KEY_LEFT_CONTROL))
             camera.setPosition(camera.getPosition().add(camera.getUp().mul(-moveSpeed)));
 
-        Vector2f cursorPos = Blobby3D.getCursorPosition();
-        Vector2f windowMid = new Vector2f(Blobby3D.getWindow().getSize().div(2));
-        cameraRotation.add(new Vector3f(cursorPos.y - windowMid.y, cursorPos.x - windowMid.x, 0f)
-                .mul(lookSensitivity));
-        cameraRotation.x = (float) Math.min(Math.PI * 0.5, Math.max(-Math.PI * 0.5, cameraRotation.x));
-        while(cameraRotation.y < -Math.PI)
-            cameraRotation.y += 2f * Math.PI;
-        while(cameraRotation.y > Math.PI)
-            cameraRotation.y -= 2f * Math.PI;
-        camera.setRotation(new Quaternionf().rotateY(cameraRotation.y).rotateX(cameraRotation.x));
-//        System.out.println(Math.toDegrees(cameraRotation.x) + " " + Math.toDegrees(cameraRotation.y));
+        if (!Blobby3D.getCursorVisible()) {
+            Vector2f cursorPos = Blobby3D.getCursorPosition();
+            Vector2f windowMid = new Vector2f(Blobby3D.getWindow().getSize().div(2));
+            cameraRotation.add(new Vector3f(cursorPos.y - windowMid.y, cursorPos.x - windowMid.x, 0f)
+                    .mul(lookSensitivity));
+            cameraRotation.x = (float) Math.min(Math.PI * 0.5, Math.max(-Math.PI * 0.5, cameraRotation.x));
+            while(cameraRotation.y < -Math.PI)
+                cameraRotation.y += 2f * Math.PI;
+            while(cameraRotation.y > Math.PI)
+                cameraRotation.y -= 2f * Math.PI;
+            camera.setRotation(new Quaternionf().rotateY(cameraRotation.y).rotateX(cameraRotation.x));
 
-        Blobby3D.setCursorPosition(windowMid);
+            Blobby3D.setCursorPosition(windowMid);
+        }
     }
 
     @Override
@@ -71,6 +72,9 @@ public class EngineTest implements EventListener {
             Blobby3D.stop();
         else if(event.key == Input.KEY_E)
             Blobby3D.getWindow().setWireframe(!Blobby3D.getWindow().isWireframe());
+        else if(event.key == Input.KEY_TAB) {
+            Blobby3D.setCursorVisible(!Blobby3D.getCursorVisible());
+        }
     }
 
 }

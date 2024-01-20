@@ -37,6 +37,8 @@ public class Blobby3D {
     private static final Map<String, ITexture> cachedTextures = new HashMap<>();
     private static final Map<String, Map<String, String>> entityData = new HashMap<>();
 
+    private static boolean cursorVisible;
+
     private static Level level;
 
     private static RenderAPI currentRenderAPI;
@@ -155,7 +157,12 @@ public class Blobby3D {
     }
 
     public static void setCursorVisible(boolean visible) {
+        cursorVisible = visible;
         glfwSetInputMode(window.getId(), GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+    }
+
+    public static boolean getCursorVisible() {
+        return cursorVisible;
     }
 
     public static void setCursorPosition(Vector2f position) {
