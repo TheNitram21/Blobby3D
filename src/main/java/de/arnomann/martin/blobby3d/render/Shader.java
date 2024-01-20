@@ -5,7 +5,6 @@ import de.arnomann.martin.blobby3d.entity.PointLight;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.opengl.GL33.*;
@@ -156,11 +155,10 @@ public class Shader {
         }
     }
 
-    public void setUniformPointLight(String name, PointLight pointLight) {
-        setUniformVector3f(name + ".position", pointLight.getPosition());
-        setUniformVector3f(name + ".color", pointLight.getColor());
-        setUniform3f(name + ".constLinearQuad", pointLight.getConstant(), pointLight.getLinear(),
-                pointLight.getQuadratic());
+    public void setUniformPointLight(String name, PointLight light) {
+        setUniformVector3f(name + ".position", light.getPosition());
+        setUniformVector3f(name + ".color", light.getColor());
+        setUniform3f(name + ".constLinearQuad", light.getConstant(), light.getLinear(), light.getQuadratic());
     }
 
     public void bind() {

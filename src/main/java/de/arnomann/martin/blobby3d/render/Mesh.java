@@ -1,7 +1,6 @@
 package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
-import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -9,18 +8,18 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL33.*;
 
-public class Model {
+public class Mesh {
 
     private int count;
     private int vbo, tbo, nbo, ebo;
     private final boolean isDynamic;
 
-    public Model(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
+    public Mesh(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
         this(vertices, textureCoords, normals, indices, false);
     }
 
-    public Model(float[] vertices, float[] textureCoords, float[] normals, int[] indices,
-                 boolean isDynamic) {
+    public Mesh(float[] vertices, float[] textureCoords, float[] normals, int[] indices,
+                boolean isDynamic) {
         this.count = indices.length;
         this.isDynamic = isDynamic;
 

@@ -1,6 +1,6 @@
 package de.arnomann.martin.blobby3d.entity;
 
-import de.arnomann.martin.blobby3d.render.Model;
+import de.arnomann.martin.blobby3d.render.Mesh;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -40,10 +40,10 @@ public class PointLight extends Entity {
     }
 
     @Override
-    public void setModel(Model model) {}
+    public void setMesh(Mesh mesh) {}
 
     @Override
-    public Model getModel() {
+    public Mesh getMesh() {
         return null;
     }
 

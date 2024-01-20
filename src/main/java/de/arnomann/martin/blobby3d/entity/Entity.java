@@ -2,7 +2,7 @@ package de.arnomann.martin.blobby3d.entity;
 
 import de.arnomann.martin.blobby3d.event.EventListener;
 import de.arnomann.martin.blobby3d.event.ListenerManager;
-import de.arnomann.martin.blobby3d.render.Model;
+import de.arnomann.martin.blobby3d.render.Mesh;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -64,8 +64,8 @@ public abstract class Entity implements EventListener {
         return rotation;
     }
 
-    public abstract void setModel(Model model);
-    public abstract Model getModel();
+    public abstract void setMesh(Mesh mesh);
+    public abstract Mesh getMesh();
 
     public abstract void setTexture(ITexture texture);
     public abstract ITexture getTexture();

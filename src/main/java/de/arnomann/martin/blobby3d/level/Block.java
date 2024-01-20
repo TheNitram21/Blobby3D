@@ -1,6 +1,6 @@
 package de.arnomann.martin.blobby3d.level;
 
-import de.arnomann.martin.blobby3d.render.Model;
+import de.arnomann.martin.blobby3d.render.Mesh;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 
 public class Block {
 
-    private static Model MODEL;
+    private static Mesh MESH;
 
     public Vector3f position;
     public Quaternionf rotation;
@@ -121,12 +121,12 @@ public class Block {
                     20, 21, 16
             };
 
-            MODEL = new Model(vertices, textureCoords, normals, indices);
+            MESH = new Mesh(vertices, textureCoords, normals, indices);
         }
     }
 
-    public Model getModel() {
-        return MODEL;
+    public Mesh getMesh() {
+        return MESH;
     }
 
     public Matrix4f getModelMatrix() {
