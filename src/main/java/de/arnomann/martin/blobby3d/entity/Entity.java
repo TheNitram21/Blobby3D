@@ -14,16 +14,22 @@ public abstract class Entity implements EventListener {
 
     private Vector3f position;
     private Quaternionf rotation;
+    private long id;
 
     private final Map<String, Object> parameters;
 
     private boolean disabled = false;
+
+    private static long entityCount = 0;
 
     public Entity(Vector3f position, Quaternionf rotation, Map<String, Object> parameters) {
         this.parameters = parameters;
 
         this.position = position;
         this.rotation = rotation;
+
+        entityCount++;
+        id = entityCount;
 
         ListenerManager.registerEventListener(this);
     }
@@ -62,6 +68,10 @@ public abstract class Entity implements EventListener {
 
     public Quaternionf getRotation() {
         return rotation;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public abstract void setMesh(Mesh mesh);

@@ -3,7 +3,6 @@ package de.arnomann.martin.blobby3d.level;
 import de.arnomann.martin.blobby3d.entity.Entity;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
@@ -26,8 +25,24 @@ public class Level {
         return blocks;
     }
 
+    public Block getBlockById(long id) {
+        for(Block block : blocks) {
+            if(block.getId() == id)
+                return block;
+        }
+        return null;
+    }
+
     public List<Entity> getEntities() {
         return entities;
+    }
+
+    public Entity getEntityById(long id) {
+        for(Entity entity : entities) {
+            if(entity.getId() == id)
+                return entity;
+        }
+        return null;
     }
 
 }

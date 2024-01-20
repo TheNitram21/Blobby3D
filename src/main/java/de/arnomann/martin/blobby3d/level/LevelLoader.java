@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static org.lwjgl.opengl.GL33.*;
-
 public class LevelLoader {
 
     private static final Logger logger = new Logger();

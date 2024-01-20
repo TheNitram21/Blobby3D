@@ -14,14 +14,20 @@ public class Block {
     public Quaternionf rotation;
     public Vector3f dimensions;
     public ITexture texture;
+    private long id;
 
     private static boolean initialized;
+
+    private static long blockCount = 0;
 
     public Block(Vector3f position, Quaternionf rotation, Vector3f dimensions, ITexture texture) {
         this.position = position;
         this.rotation = rotation;
         this.dimensions = dimensions;
         this.texture = texture;
+
+        blockCount++;
+        id = blockCount;
     }
 
     public static void initialize() {
@@ -123,6 +129,10 @@ public class Block {
 
             MESH = new Mesh(vertices, textureCoords, normals, indices);
         }
+    }
+
+    public long getId() {
+        return id;
     }
 
     public Mesh getMesh() {
