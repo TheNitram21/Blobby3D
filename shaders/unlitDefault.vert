@@ -2,7 +2,7 @@
 
 layout(location = 0) in vec3 in_Position;
 layout(location = 1) in vec2 in_TextureCoords;
-layout(location = 3) in vec3 in_Normals;
+layout(location = 2) in vec3 in_Normal;
 
 uniform mat4 u_ModelViewProjectionMatrix;
 

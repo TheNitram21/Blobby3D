@@ -68,18 +68,6 @@
                 "Linear": "0.14",
                 "Quadratic": "0.07"
             }
-        },
-        {
-            "ClassName": "PointLight",
-            "Position": { "X": "-7.0", "Y": "2.0", "Z": "-7.0" },
-            "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
-            "Parameters": {
-                "Name": "SampleLight",
-                "Color": { "R": "1.0", "G": "1.0", "B": "1.0" },
-                "Constant": "1.0",
-                "Linear": "0.14",
-                "Quadratic": "0.07"
-            }
         }
     ]
 }

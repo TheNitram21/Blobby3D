@@ -20,6 +20,32 @@ uniform vec3 u_CameraPosition;
 
 out vec4 out_Color;
 
+vec3 calculateLighting();
+vec3 calculateAllPointLights();
+vec3 calculatePointLight(PointLight light);
+
+void main() {
+    vec3 lighting = calculateLighting();
+    out_Color = texture2D(u_Texture, pass_TextureCoords) * vec4(lighting, 1.0);
+}
+
+vec3 calculateLighting() {
+    vec3 lighting = u_AmbientLightColor;
+    lighting += calculateAllPointLights();
+
+    return lighting;
+}
+
+vec3 calculateAllPointLights() {
+    vec3 lighting = vec3(0.0);
+    for(int i = 0; i < MAX_POINT_LIGHT_COUNT; i++) {
+        if(i >= u_PointLightCount)
+            return lighting;
+        lighting += calculatePointLight(u_PointLights[i]);
+    }
+    return lighting;
+}
+
 vec3 calculatePointLight(PointLight light) {
     vec3 normal = normalize(pass_Normal);
     vec3 lightDirection = normalize(light.position - pass_FragmentPosition);
@@ -37,25 +63,4 @@ vec3 calculatePointLight(PointLight light) {
     float attenuation = 1.0 / (light.constLinearQuad.x + light.constLinearQuad.y * distance +
             light.constLinearQuad.z * distance * distance);
     return attenuation * (diffuse + specular);
-}
-
-vec3 calculateAllPointLights() {
-    vec3 lightingResult = vec3(0.0);
-
-    for(int i = 0; i < MAX_POINT_LIGHT_COUNT; i++) {
-        if(i >= u_PointLightCount)
-            return lightingResult;
-        lightingResult += calculatePointLight(u_PointLights[i]);
-    }
-    return lightingResult;
-}
-
-void main() {
-    vec3 lighting = u_AmbientLightColor;
-    lighting += calculateAllPointLights();
-//    lighting += calculatePointLight(u_PointLights[0]);
-//    lighting += calculatePointLight(PointLight(vec3(0.0, 2.0, 0.0), vec3(1.0, 1.0, 1.0), 1.0, 0.14, 0.07));
-//    lighting += calculatePointLight(PointLight(vec3(-7.0, 2.0, -7.0), vec3(1.0, 1.0, 1.0), 1.0, 0.14, 0.07));
-
-    out_Color = texture2D(u_Texture, pass_TextureCoords) * vec4(lighting, 1.0);
 }
