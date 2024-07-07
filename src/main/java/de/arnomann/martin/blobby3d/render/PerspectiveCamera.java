@@ -66,7 +66,7 @@ public class PerspectiveCamera implements Camera {
 
     @Override
     public Vector3f getRight() {
-        return new Vector3f(0f, 1f, 0f).cross(getForward()).normalize();
+        return new Vector3f(1f, 0f, 0f).rotate(rotation);
     }
 
     @Override

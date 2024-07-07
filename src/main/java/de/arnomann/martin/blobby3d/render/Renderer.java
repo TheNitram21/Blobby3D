@@ -4,8 +4,10 @@ import de.arnomann.martin.blobby3d.core.Blobby3D;
 import de.arnomann.martin.blobby3d.entity.Entity;
 import de.arnomann.martin.blobby3d.entity.PointLight;
 import de.arnomann.martin.blobby3d.level.Block;
+import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +16,15 @@ import static org.lwjgl.opengl.GL33.*;
 
 public class Renderer {
 
-    private static Shader defaultShader;
+    private static Shader defaultShader, unlitShader;
 
     private static boolean initialized;
 
     private static int vao;
     private static Camera camera;
     private static Shader shader;
+
+    private static int quadVBO, quadTBO;
 
     private static List<PointLight> pointLights = new ArrayList<>();
 
@@ -34,6 +38,34 @@ public class Renderer {
             vao = glGenVertexArrays();
             glBindVertexArray(vao);
 
+            quadVBO = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+            glBufferData(GL_ARRAY_BUFFER, new float[] {
+//                    -0.5f,  0.5f,
+//                     0.5f, -0.5f,
+//                    -0.5f, -0.5f,
+//                    -0.5f,  0.5f,
+//                     0.5f,  0.5f,
+//                     0.5f, -0.5f
+                    0f, 0f, 0f,
+                    1f, 0f, 0f,
+                    0f, 1f, 0f,
+                    1f, 0f, 0f,
+                    1f, 1f, 0f,
+                    0f, 1f, 0f
+            }, GL_STATIC_DRAW);
+            quadTBO = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
+            glBufferData(GL_ARRAY_BUFFER, new float[] {
+                    0f, 0f,
+                    1f, 0f,
+                    0f, 1f,
+                    1f, 0f,
+                    1f, 1f,
+                    0f, 1f
+            }, GL_STATIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
             glEnableVertexAttribArray(2);
@@ -42,6 +74,7 @@ public class Renderer {
             camera = new PerspectiveCamera(70, aspectRatio, 0.01f, 1000f);
 
             defaultShader = Shader.createFromName("litDefault");
+            unlitShader = Shader.createFromName("unlitDefault");
             shader = defaultShader;
         }
 
@@ -84,35 +117,36 @@ public class Renderer {
         shader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
                 camera.getViewProjectionMatrix()).mul(block.getModelMatrix()));
 
-        glBindBuffer(GL_ARRAY_BUFFER, block.getMesh().getVBO());
+        glBindBuffer(GL_ARRAY_BUFFER, block.getVBO());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, block.getMesh().getTBO());
+        glBindBuffer(GL_ARRAY_BUFFER, block.getTBO());
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 8, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, block.getMesh().getNBO());
+        glBindBuffer(GL_ARRAY_BUFFER, block.getNBO());
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 12, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, block.getMesh().getEBO());
-        glDrawElements(GL_TRIANGLES, block.getMesh().getCount(), GL_UNSIGNED_INT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, block.getEBO());
+        glDrawElements(GL_TRIANGLES, block.getFaceCount() * 6, GL_UNSIGNED_INT, 0);
     }
 
     public static void renderEntity(Entity entity) {
         if(entity.getMesh() == null)
             return;
 
-        shader.bind();
+        entity.getShader().bind();
         entity.getTexture().bind(0);
-        shader.setUniform1i("u_Texture", 0);
+        entity.getShader().setUniform1i("u_Texture", 0);
 
-        shader.setUniformVector3f("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
+        entity.getShader().setUniformVector3f("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
 
         for(int i = 0; i < pointLights.size(); i++)
-            shader.setUniformPointLight("u_PointLights[" + i + "]", pointLights.get(i));
-        shader.setUniform1i("u_PointLightCount", pointLights.size());
+            entity.getShader().setUniformPointLight("u_PointLights[" + i + "]", pointLights.get(i));
+        entity.getShader().setUniform1i("u_PointLightCount", pointLights.size());
 
-        shader.setUniformVector3f("u_CameraPosition", camera.getPosition());
+        entity.getShader().setUniformVector3f("u_CameraPosition", camera.getPosition());
 
-        shader.setUniformMatrix3f("u_NormalMatrix", new Matrix3f(entity.getModelMatrix()).invert().transpose());
-        shader.setUniformMatrix4f("u_ModelMatrix", entity.getModelMatrix());
-        shader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
+        entity.getShader().setUniformMatrix3f("u_NormalMatrix", new Matrix3f(entity.getModelMatrix()).invert()
+                .transpose());
+        entity.getShader().setUniformMatrix4f("u_ModelMatrix", entity.getModelMatrix());
+        entity.getShader().setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
                 camera.getViewProjectionMatrix()).mul(entity.getModelMatrix()));
 
         glBindBuffer(GL_ARRAY_BUFFER, entity.getMesh().getVBO());
@@ -123,6 +157,24 @@ public class Renderer {
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 12, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, entity.getMesh().getEBO());
         glDrawElements(GL_TRIANGLES, entity.getMesh().getCount(), GL_UNSIGNED_INT, 0);
+    }
+
+    public static void renderSprite(ITexture texture, Vector3f position) {
+        if(texture == null)
+            return;
+
+        unlitShader.bind();
+        texture.bind(0);
+        unlitShader.setUniform1i("u_Texture", 0);
+
+        unlitShader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
+                camera.getViewProjectionMatrix()).mul(new Matrix4f().translate(position).rotate(camera.getRotation())));
+
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 8, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     public static Shader getDefaultShader() {

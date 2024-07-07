@@ -5,6 +5,7 @@ public interface EventListener {
     default void onStop(StopEvent event) {}
     default void onUpdate(UpdateEvent event) {}
     default void onLateUpdate(LateUpdateEvent event) {}
+    default void onRender(RenderEvent event) {}
     default void onKeyPressed(KeyPressedEvent event) {}
     default void onKeyReleased(KeyReleasedEvent event) {}
     default void onMouseButtonPressed(MouseButtonPressedEvent event) {}

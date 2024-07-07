@@ -7,13 +7,17 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL33.*;
 
 public class Shader {
 
     private final int id;
+    private static final Map<String, Shader> cashedShaders = new HashMap<>();
 
-    public Shader(String vertexSource, String fragmentSource) {
+    private Shader(String vertexSource, String fragmentSource) {
         id = createShader(vertexSource, fragmentSource);
         if(id == -1) {
             Blobby3D.getLogger().error("An error occured whilst trying to create the shader!");
@@ -21,13 +25,17 @@ public class Shader {
     }
 
     public static Shader createFromPath(String vertexPath, String fragmentPath) {
-        return new Shader(Blobby3D.readFile(Blobby3D.SHADERS_PATH + vertexPath),
+        if(cashedShaders.containsKey(vertexPath + "/" + fragmentPath))
+            return cashedShaders.get(vertexPath + "/" + fragmentPath);
+
+        Shader shader = new Shader(Blobby3D.readFile(Blobby3D.SHADERS_PATH + vertexPath),
                 Blobby3D.readFile(Blobby3D.SHADERS_PATH + fragmentPath));
+        cashedShaders.put(vertexPath + "/" + fragmentPath, shader);
+        return shader;
     }
 
     public static Shader createFromName(String shaderName) {
-        return new Shader(Blobby3D.readFile(Blobby3D.SHADERS_PATH + shaderName + ".vert"),
-                Blobby3D.readFile(Blobby3D.SHADERS_PATH + shaderName + ".frag"));
+        return createFromPath(shaderName + ".vert", shaderName + ".frag");
     }
 
     private int createShader(String vertexSource, String fragmentSource) {

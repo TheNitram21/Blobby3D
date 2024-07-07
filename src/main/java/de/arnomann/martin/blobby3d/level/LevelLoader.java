@@ -7,6 +7,7 @@ import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,7 +41,13 @@ public class LevelLoader {
             Vector3f dimensions = loadVector(blockJSON.getJSONObject("Dimensions"));
             ITexture texture = Blobby3D.getTexture(blockJSON.getString("Texture"));
 
-            blocks.add(new Block(position, rotation, dimensions, texture));
+            JSONArray facesArray = blockJSON.getJSONArray("Faces");
+            boolean[] faces = new boolean[facesArray.length()];
+            for(int i = 0; i < facesArray.length(); i++) {
+                faces[i] = facesArray.getBoolean(i);
+            }
+
+            blocks.add(new Block(position, rotation, dimensions, texture, faces));
         }
 
         List<Entity> entities = new ArrayList<>();

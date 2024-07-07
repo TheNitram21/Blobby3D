@@ -3,6 +3,8 @@ package de.arnomann.martin.blobby3d.entity;
 import de.arnomann.martin.blobby3d.event.EventListener;
 import de.arnomann.martin.blobby3d.event.ListenerManager;
 import de.arnomann.martin.blobby3d.render.Mesh;
+import de.arnomann.martin.blobby3d.render.Renderer;
+import de.arnomann.martin.blobby3d.render.Shader;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -14,6 +16,7 @@ public abstract class Entity implements EventListener {
 
     private Vector3f position;
     private Quaternionf rotation;
+    private Shader shader;
     private long id;
 
     private final Map<String, Object> parameters;
@@ -27,6 +30,8 @@ public abstract class Entity implements EventListener {
 
         this.position = position;
         this.rotation = rotation;
+        this.shader = parameters.containsKey("Shader") ? Shader.createFromName((String) parameters.get("Shader")) :
+                Renderer.getDefaultShader();
 
         entityCount++;
         id = entityCount;
@@ -68,6 +73,10 @@ public abstract class Entity implements EventListener {
 
     public Quaternionf getRotation() {
         return rotation;
+    }
+
+    public Shader getShader() {
+        return shader;
     }
 
     public long getId() {

@@ -8,4 +8,6 @@ out vec4 out_Color;
 
 void main() {
     out_Color = texture2D(u_Texture, pass_TextureCoords);
+    if(out_Color.a == 0.0)
+        discard;
 }

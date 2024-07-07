@@ -47,7 +47,7 @@ public class Blobby3D {
 
     public static void run(RunConfigurations runConfig) {
         logger = new Logger();
-        loadEntities("bin/entities.json");
+        loadEntities(BINARIES_PATH + "entities.json");
 
         if(!glfwInit()) {
             logger.error("An error occurred whilst trying to initialize GLFW.");
@@ -138,7 +138,7 @@ public class Blobby3D {
 
     public static Entity instantiateEntity(String className, Vector3f position, Quaternionf rotation,
                                            Map<String, Object> parameters) throws ReflectiveOperationException {
-        JSONObject entitiesJSON = new JSONObject(readFile("bin/entities.json"));
+        JSONObject entitiesJSON = new JSONObject(readFile(BINARIES_PATH + "entities.json"));
         String internalClassName = null;
 
         for(Object entityObject : entitiesJSON.getJSONArray("Entities")) {

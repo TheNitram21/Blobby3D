@@ -93,10 +93,12 @@ public class Window {
             double deltaTime = time - lastFrameTime;
 
             if(maxFramerate <= 0 || deltaTime >= 1f / maxFramerate) {
-                ListenerManager.callEvent(new UpdateEvent(deltaTime, time));
-                ListenerManager.callEvent(new LateUpdateEvent(deltaTime, time));
+                ListenerManager.callEvent(new UpdateEvent(deltaTime, glfwGetTime()));
+                ListenerManager.callEvent(new LateUpdateEvent(deltaTime, glfwGetTime()));
 
                 Renderer.render();
+
+                ListenerManager.callEvent(new RenderEvent(glfwGetTime()));
 
                 glfwSwapBuffers(windowId);
                 glfwPollEvents();
