@@ -1,7 +1,7 @@
 package de.arnomann.martin.blobby3d.core;
 
 import de.arnomann.martin.blobby3d.event.*;
-import org.joml.Vector2f;
+import de.arnomann.martin.blobby3d.math.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.DoubleBuffer;
@@ -167,7 +167,7 @@ public class Input {
                 DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
 
                 glfwGetCursorPos(windowId, cursorX, cursorY);
-                ListenerManager.callEvent(new MouseButtonPressedEvent(key, new Vector2f((float) cursorX.get(),
+                ListenerManager.callEvent(new MouseButtonPressedEvent(key, new Vector2((float) cursorX.get(),
                         (float) cursorY.get())));
                 keys.add(key);
             } else if(action == GLFW_RELEASE) {
@@ -175,14 +175,14 @@ public class Input {
                 DoubleBuffer cursorY = BufferUtils.createDoubleBuffer(1);
 
                 glfwGetCursorPos(windowId, cursorX, cursorY);
-                ListenerManager.callEvent(new MouseButtonReleasedEvent(key, new Vector2f((float) cursorX.get(),
+                ListenerManager.callEvent(new MouseButtonReleasedEvent(key, new Vector2((float) cursorX.get(),
                         (float) cursorY.get())));
                 keys.remove(Integer.valueOf(key));
             }
         });
 
         glfwSetCursorPosCallback(Blobby3D.getWindow().getId(), (windowId, xPos, yPos) -> {
-            ListenerManager.callEvent(new CursorPositionChangedEvent(new Vector2f((float) xPos, (float) yPos)));
+            ListenerManager.callEvent(new CursorPositionChangedEvent(new Vector2((float) xPos, (float) yPos)));
         });
 
         Blobby3D.getLogger().info("Input initialized");

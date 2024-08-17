@@ -175,7 +175,7 @@ public class Logger {
     }
 
     /**
-     * Destroyes the logger and optionally saves the log file.
+     * Destroys the logger and optionally saves the log file.
      */
     public void destroy() {
         try {

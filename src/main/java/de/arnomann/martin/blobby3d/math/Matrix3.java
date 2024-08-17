@@ -27,7 +27,15 @@ public class Matrix3 {
     }
 
     public Matrix3(Matrix3 matrix) {
-        this.content = Arrays.copyOf(matrix.content, 9);
+        content = Arrays.copyOf(matrix.content, 9);
+    }
+
+    public Matrix3(Matrix4 matrix) {
+        content = new float[][] {
+                { matrix.get(0, 0), matrix.get(0, 1), matrix.get(0, 2) },
+                { matrix.get(1, 0), matrix.get(1, 1), matrix.get(1, 2) },
+                { matrix.get(2, 0), matrix.get(2, 1), matrix.get(2, 2) }
+        };
     }
 
     public static Matrix3 identity() {

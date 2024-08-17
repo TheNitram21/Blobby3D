@@ -95,13 +95,6 @@
             <artifactId>lwjgl-stb</artifactId>
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
-
-        <!-- THIS MAY BE REPLACED BY CUSTOM MATH LIBRARY -->
-        <dependency>
-            <groupId>org.joml</groupId>
-            <artifactId>joml</artifactId>
-            <version>${joml.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

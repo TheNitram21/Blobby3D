@@ -4,9 +4,7 @@ import de.arnomann.martin.blobby3d.core.Blobby3D;
 import de.arnomann.martin.blobby3d.entity.Entity;
 import de.arnomann.martin.blobby3d.logging.Logger;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import de.arnomann.martin.blobby3d.math.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,16 +27,16 @@ public class LevelLoader {
         JSONObject json = new JSONObject(Blobby3D.readFile(fileName));
 
         JSONObject ambientLightJSON = json.getJSONObject("AmbientLight");
-        Vector3f ambientLightColor = new Vector3f(ambientLightJSON.getFloat("R"), ambientLightJSON.getFloat("G"),
+        Vector3 ambientLightColor = new Vector3(ambientLightJSON.getFloat("R"), ambientLightJSON.getFloat("G"),
                 ambientLightJSON.getFloat("B"));
 
         List<Block> blocks = new ArrayList<>();
         for(Object blockObject : json.getJSONArray("Blocks")) {
             JSONObject blockJSON = (JSONObject) blockObject;
 
-            Vector3f position = loadVector(blockJSON.getJSONObject("Position"));
-            Quaternionf rotation = loadQuaternion(blockJSON.getJSONObject("Rotation"));
-            Vector3f dimensions = loadVector(blockJSON.getJSONObject("Dimensions"));
+            Vector3 position = loadVector(blockJSON.getJSONObject("Position"));
+            Quaternion rotation = loadQuaternion(blockJSON.getJSONObject("Rotation"));
+            Vector3 dimensions = loadVector(blockJSON.getJSONObject("Dimensions"));
             ITexture texture = Blobby3D.getTexture(blockJSON.getString("Texture"));
 
             JSONArray facesArray = blockJSON.getJSONArray("Faces");
@@ -57,8 +55,8 @@ public class LevelLoader {
 
             Map<String, String> parametersData = Blobby3D.getEntityData().get(className);
 
-            Vector3f position = loadVector(entityJSON.getJSONObject("Position"));
-            Quaternionf rotation = loadQuaternion(entityJSON.getJSONObject("Rotation"));
+            Vector3 position = loadVector(entityJSON.getJSONObject("Position"));
+            Quaternion rotation = loadQuaternion(entityJSON.getJSONObject("Rotation"));
 
             Map<String, Object> entityParameters = new HashMap<>();
             JSONObject parametersJSON = entityJSON.getJSONObject("Parameters");
@@ -101,20 +99,20 @@ public class LevelLoader {
         onDone.accept(level);
     }
 
-    private static Vector3f loadVector(JSONObject json) {
-        return new Vector3f(json.getFloat("X"), json.getFloat("Y"), json.getFloat("Z"));
+    private static Vector3 loadVector(JSONObject json) {
+        return new Vector3(json.getFloat("X"), json.getFloat("Y"), json.getFloat("Z"));
     }
 
-    private static Quaternionf loadQuaternion(JSONObject json) {
-        return new Quaternionf().rotateXYZ(json.getFloat("X"), json.getFloat("Y"), json.getFloat("Z"));
+    private static Quaternion loadQuaternion(JSONObject json) {
+        return Quaternion.fromEulerAngles(json.getFloat("X"), json.getFloat("Y"), json.getFloat("Z"));
     }
 
-    private static Vector3f loadRGB(JSONObject json) {
-        return new Vector3f(json.getFloat("R"), json.getFloat("G"), json.getFloat("B"));
+    private static Vector3 loadRGB(JSONObject json) {
+        return new Vector3(json.getFloat("R"), json.getFloat("G"), json.getFloat("B"));
     }
 
-    private static Vector4f loadRGBA(JSONObject json) {
-        return new Vector4f(json.getFloat("R"), json.getFloat("G"), json.getFloat("B"),
+    private static Vector4 loadRGBA(JSONObject json) {
+        return new Vector4(json.getFloat("R"), json.getFloat("G"), json.getFloat("B"),
                 json.getFloat("A"));
     }
 

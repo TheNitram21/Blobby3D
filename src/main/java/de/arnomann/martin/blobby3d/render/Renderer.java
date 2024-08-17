@@ -5,9 +5,7 @@ import de.arnomann.martin.blobby3d.entity.Entity;
 import de.arnomann.martin.blobby3d.entity.PointLight;
 import de.arnomann.martin.blobby3d.level.Block;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,18 +102,17 @@ public class Renderer {
         block.texture.bind(0);
         shader.setUniform1i("u_Texture", 0);
 
-        shader.setUniformVector3f("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
+        shader.setUniformVector3("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
 
         for(int i = 0; i < pointLights.size(); i++)
             shader.setUniformPointLight("u_PointLights[" + i + "]", pointLights.get(i));
         shader.setUniform1i("u_PointLightCount", pointLights.size());
 
-        shader.setUniformVector3f("u_CameraPosition", camera.getPosition());
+        shader.setUniformVector3("u_CameraPosition", camera.getPosition());
 
-        shader.setUniformMatrix3f("u_NormalMatrix", new Matrix3f(block.getModelMatrix()).invert().transpose());
-        shader.setUniformMatrix4f("u_ModelMatrix", block.getModelMatrix());
-        shader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
-                camera.getViewProjectionMatrix()).mul(block.getModelMatrix()));
+        shader.setUniformMatrix3("u_NormalMatrix", new Matrix3(block.getModelMatrix()).inverse().transpose());
+        shader.setUniformMatrix4("u_ModelMatrix", block.getModelMatrix());
+        shader.setUniformMatrix4("u_ModelViewProjectionMatrix", camera.getViewProjectionMatrix().mul(block.getModelMatrix()));
 
         glBindBuffer(GL_ARRAY_BUFFER, block.getVBO());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
@@ -135,19 +132,18 @@ public class Renderer {
         entity.getTexture().bind(0);
         entity.getShader().setUniform1i("u_Texture", 0);
 
-        entity.getShader().setUniformVector3f("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
+        entity.getShader().setUniformVector3("u_AmbientLightColor", Blobby3D.getLevel().getAmbientLightColor());
 
         for(int i = 0; i < pointLights.size(); i++)
             entity.getShader().setUniformPointLight("u_PointLights[" + i + "]", pointLights.get(i));
         entity.getShader().setUniform1i("u_PointLightCount", pointLights.size());
 
-        entity.getShader().setUniformVector3f("u_CameraPosition", camera.getPosition());
+        entity.getShader().setUniformVector3("u_CameraPosition", camera.getPosition());
 
-        entity.getShader().setUniformMatrix3f("u_NormalMatrix", new Matrix3f(entity.getModelMatrix()).invert()
+        entity.getShader().setUniformMatrix3("u_NormalMatrix", new Matrix3(entity.getModelMatrix()).inverse()
                 .transpose());
-        entity.getShader().setUniformMatrix4f("u_ModelMatrix", entity.getModelMatrix());
-        entity.getShader().setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
-                camera.getViewProjectionMatrix()).mul(entity.getModelMatrix()));
+        entity.getShader().setUniformMatrix4("u_ModelMatrix", entity.getModelMatrix());
+        entity.getShader().setUniformMatrix4("u_ModelViewProjectionMatrix", camera.getViewProjectionMatrix().mul(entity.getModelMatrix()));
 
         glBindBuffer(GL_ARRAY_BUFFER, entity.getMesh().getVBO());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
@@ -159,7 +155,7 @@ public class Renderer {
         glDrawElements(GL_TRIANGLES, entity.getMesh().getCount(), GL_UNSIGNED_INT, 0);
     }
 
-    public static void renderSprite(ITexture texture, Vector3f position) {
+    public static void renderSprite(ITexture texture, Vector3 position) {
         if(texture == null)
             return;
 
@@ -167,8 +163,8 @@ public class Renderer {
         texture.bind(0);
         unlitShader.setUniform1i("u_Texture", 0);
 
-        unlitShader.setUniformMatrix4f("u_ModelViewProjectionMatrix", new Matrix4f(
-                camera.getViewProjectionMatrix()).mul(new Matrix4f().translate(position).rotate(camera.getRotation())));
+        unlitShader.setUniformMatrix4("u_ModelViewProjectionMatrix", new Matrix4(
+                camera.getViewProjectionMatrix()).mul(new Matrix4().translate(position).rotate(camera.getRotation())));
 
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);

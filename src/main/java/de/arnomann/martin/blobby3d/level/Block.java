@@ -1,9 +1,7 @@
 package de.arnomann.martin.blobby3d.level;
 
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +13,9 @@ public class Block {
     private static int vbo, tbo, nbo;
     private int ebo;
 
-    public Vector3f position;
-    public Quaternionf rotation;
-    public Vector3f dimensions;
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector3 dimensions;
     public ITexture texture;
     private long id;
 
@@ -25,7 +23,7 @@ public class Block {
 
     private static long blockCount = 0;
 
-    public Block(Vector3f position, Quaternionf rotation, Vector3f dimensions, ITexture texture,
+    public Block(Vector3 position, Quaternion rotation, Vector3 dimensions, ITexture texture,
                  boolean[] faces) {
         this.position = position;
         this.rotation = rotation;
@@ -34,17 +32,17 @@ public class Block {
 
         List<Integer> indices = new ArrayList<>();
         if(faces[0])    // TOP
-            indices.addAll(List.of(23, 18, 22, 19, 18, 23));
+            indices.addAll(List.of(22, 18, 23, 23, 18, 19));
         if(faces[1])    // DOWN
-            indices.addAll(List.of(16, 21, 17, 20, 21, 16));
+            indices.addAll(List.of(17, 21, 16, 16, 21, 20));
         if(faces[2])    // LEFT
-            indices.addAll(List.of(12, 8, 11, 12, 11, 15));
+            indices.addAll(List.of(11, 8, 12, 15, 11, 12));
         if(faces[3])    // RIGHT
-            indices.addAll(List.of(13, 14, 9, 9, 14, 10));
+            indices.addAll(List.of(9, 14, 13, 10, 14, 9));
         if(faces[4])    // FRONT
-            indices.addAll(List.of(0, 1, 2, 0, 2, 3));
+            indices.addAll(List.of(2, 1, 0, 3, 2, 0));
         if(faces[5])    // BACK
-            indices.addAll(List.of(5, 4, 7, 5, 7, 6));
+            indices.addAll(List.of(7, 4, 5, 6, 7, 5));
 
         ebo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, ebo);
@@ -188,8 +186,8 @@ public class Block {
         return ebo;
     }
 
-    public Matrix4f getModelMatrix() {
-        return new Matrix4f().translate(position).scale(dimensions).rotate(rotation);
+    public Matrix4 getModelMatrix() {
+        return new Matrix4().translate(position).scale(dimensions).rotate(rotation);
     }
 
 }

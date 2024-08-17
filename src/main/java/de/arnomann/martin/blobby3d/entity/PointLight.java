@@ -2,28 +2,27 @@ package de.arnomann.martin.blobby3d.entity;
 
 import de.arnomann.martin.blobby3d.render.Mesh;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 
 import java.util.Map;
 
 public class PointLight extends Entity {
 
-    private Vector3f color;
+    private Vector3 color;
     private float constant;
     private float linear;
     private float quadratic;
 
-    public PointLight(Vector3f position, Quaternionf rotation, Map<String, Object> parameters) {
+    public PointLight(Vector3 position, Quaternion rotation, Map<String, Object> parameters) {
         super(position, rotation, parameters);
 
-        color = (Vector3f) parameters.get("Color");
+        color = (Vector3) parameters.get("Color");
         constant = (float) parameters.get("Constant");
         linear = (float) parameters.get("Linear");
         quadratic = (float) parameters.get("Quadratic");
     }
 
-    public Vector3f getColor() {
+    public Vector3 getColor() {
         return color;
     }
 

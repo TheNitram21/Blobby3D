@@ -14,6 +14,9 @@ public class Mesh {
     private int vbo, tbo, nbo, ebo;
     private final boolean isDynamic;
 
+    private float[] vertices, textureCoords, normals;
+    private int[] indices;
+
     public Mesh(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
         this(vertices, textureCoords, normals, indices, false);
     }
@@ -22,6 +25,11 @@ public class Mesh {
                 boolean isDynamic) {
         this.count = indices.length;
         this.isDynamic = isDynamic;
+
+        this.vertices = vertices;
+        this.textureCoords = textureCoords;
+        this.normals = normals;
+        this.indices = indices;
 
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);

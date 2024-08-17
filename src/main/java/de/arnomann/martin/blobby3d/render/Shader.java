@@ -2,9 +2,7 @@ package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
 import de.arnomann.martin.blobby3d.entity.PointLight;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 import org.lwjgl.system.MemoryStack;
 
 import java.util.HashMap;
@@ -105,7 +103,7 @@ public class Shader {
         }
     }
 
-    public void setUniformVector3f(String name, Vector3f vector) {
+    public void setUniformVector3(String name, Vector3 vector) {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             int location = glGetUniformLocation(id, name);
             if(location != -1) {
@@ -141,31 +139,31 @@ public class Shader {
         }
     }
 
-    public void setUniformMatrix3f(String name, Matrix3f matrix) {
+    public void setUniformMatrix3(String name, Matrix3 matrix) {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             int location = glGetUniformLocation(id, name);
             try(MemoryStack stack = MemoryStack.stackPush()) {
                 if(location != -1) {
-                    glUniformMatrix3fv(location, false, matrix.get(stack.mallocFloat(9)));
+                    glUniformMatrix3fv(location, false, matrix.toFloatBuffer());
                 }
             }
         }
     }
 
-    public void setUniformMatrix4f(String name, Matrix4f matrix) {
+    public void setUniformMatrix4(String name, Matrix4 matrix) {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             int location = glGetUniformLocation(id, name);
             try(MemoryStack stack = MemoryStack.stackPush()) {
                 if(location != -1) {
-                    glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(16)));
+                    glUniformMatrix4fv(location, false, matrix.toFloatBuffer());
                 }
             }
         }
     }
 
     public void setUniformPointLight(String name, PointLight light) {
-        setUniformVector3f(name + ".position", light.getPosition());
-        setUniformVector3f(name + ".color", light.getColor());
+        setUniformVector3(name + ".position", light.getPosition());
+        setUniformVector3(name + ".color", light.getColor());
         setUniform3f(name + ".constLinearQuad", light.getConstant(), light.getLinear(), light.getQuadratic());
     }
 

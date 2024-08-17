@@ -46,7 +46,7 @@ public class Matrix4 {
 
     public static Matrix4 perspective(float fovx, float fovy, float near, float far) {
         return new Matrix4((float) (1f / Math.tan(fovx * 0.5f)), 0f, 0f, 0f,
-                0f, (float) (1f / Math.tan(fovy * 0.5f)), 0f, 0f,
+                0f, (float) (2f / Math.tan(fovy * 0.5f)), 0f, 0f,
                 0f, 0f, -(far + near) / (far - near), -(2f * far * near) / (far - near),
                 0f, 0f, -1f, 0f);
     }
@@ -177,13 +177,14 @@ public class Matrix4 {
     }
 
     public Matrix4 rotate(Quaternion q) {
-        return new Matrix4(1f - 2f * q.y * q.y - 2f * q.z * q.z, 2f * q.x * q.y - 2f * q.z * q.w,
-                2f * q.x * q.z + q.y * q.w, 0f,
+        q = q.normalized();
+        return mul(new Matrix4(1f - 2f * q.y * q.y - 2f * q.z * q.z, 2f * q.x * q.y - 2f * q.z * q.w,
+                2f * q.x * q.z + 2f * q.y * q.w, 0f,
                 2f * q.x * q.y + 2f * q.z * q.w, 1f - 2f * q.x * q.x - 2f * q.z * q.z,
                 2f * q.y * q.z - 2f * q.x * q.w, 0f,
                 2f * q.x * q.z - 2f * q.y * q.w, 2f * q.y * q.z + 2f * q.x * q.w,
                 1f - 2f * q.x * q.x - 2f * q.y * q.y, 0f,
-                0f, 0f, 0f, 1f);
+                0f, 0f, 0f, 1f));
     }
 
     public Matrix4 rotateX(float degrees) {

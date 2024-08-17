@@ -9,9 +9,7 @@ import de.arnomann.martin.blobby3d.render.RenderAPI;
 import de.arnomann.martin.blobby3d.render.Renderer;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import de.arnomann.martin.blobby3d.render.texture.Texture;
-import org.joml.Quaternionf;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 import org.json.JSONObject;
 import org.lwjgl.BufferUtils;
 
@@ -136,7 +134,7 @@ public class Blobby3D {
         cachedTextures.clear();
     }
 
-    public static Entity instantiateEntity(String className, Vector3f position, Quaternionf rotation,
+    public static Entity instantiateEntity(String className, Vector3 position, Quaternion rotation,
                                            Map<String, Object> parameters) throws ReflectiveOperationException {
         JSONObject entitiesJSON = new JSONObject(readFile(BINARIES_PATH + "entities.json"));
         String internalClassName = null;
@@ -152,7 +150,7 @@ public class Blobby3D {
             return null;
 
         Class<?> entityClass = Class.forName(internalClassName);
-        return (Entity) entityClass.getConstructor(Vector3f.class, Quaternionf.class, Map.class)
+        return (Entity) entityClass.getConstructor(Vector3.class, Quaternion.class, Map.class)
                 .newInstance(position, rotation, parameters);
     }
 
@@ -165,15 +163,15 @@ public class Blobby3D {
         return cursorVisible;
     }
 
-    public static void setCursorPosition(Vector2f position) {
+    public static void setCursorPosition(Vector2 position) {
         glfwSetCursorPos(window.getId(), position.x, position.y);
     }
 
-    public static Vector2f getCursorPosition() {
+    public static Vector2 getCursorPosition() {
         DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window.getId(), xPos, yPos);
-        return new Vector2f((float) xPos.get(0), (float) yPos.get(0));
+        return new Vector2((float) xPos.get(0), (float) yPos.get(0));
     }
 
     public static String getOpenGLError() {

@@ -1,82 +1,80 @@
 package de.arnomann.martin.blobby3d.render;
 
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 
 public class OrthographicCamera implements Camera {
 
-    private Matrix4f projectionMatrix;
-    private Matrix4f viewMatrix;
-    private Matrix4f viewProjectionMatrix;
+    private Matrix4 projectionMatrix;
+    private Matrix4 viewMatrix;
+    private Matrix4 viewProjectionMatrix;
 
-    private Vector3f position;
-    private Quaternionf rotation;
+    private Vector3 position;
+    private Quaternion rotation;
 
     public OrthographicCamera(float left, float right, float bottom, float top, float near, float far) {
-        position = new Vector3f();
-        rotation = new Quaternionf();
+        position = new Vector3();
+        rotation = new Quaternion();
 
-        projectionMatrix = new Matrix4f().orthoLH(left, right, bottom, top, near, far);
-        viewMatrix = new Matrix4f();
-        viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
+        projectionMatrix = Matrix4.ortho(left, right, bottom, top, near, far);
+        viewMatrix = new Matrix4();
+        viewProjectionMatrix = new Matrix4(projectionMatrix).mul(viewMatrix);
     }
 
     @Override
-    public Matrix4f getProjectionMatrix() {
+    public Matrix4 getProjectionMatrix() {
         return projectionMatrix;
     }
 
     @Override
-    public Matrix4f getViewMatrix() {
+    public Matrix4 getViewMatrix() {
         return viewMatrix;
     }
 
     @Override
-    public Matrix4f getViewProjectionMatrix() {
+    public Matrix4 getViewProjectionMatrix() {
         return viewProjectionMatrix;
     }
 
     @Override
-    public Vector3f getPosition() {
-        return new Vector3f(position);
+    public Vector3 getPosition() {
+        return position;
     }
 
     @Override
-    public void setPosition(Vector3f position) {
+    public void setPosition(Vector3 position) {
         this.position = position;
         recalculateViewMatrix();
     }
 
     @Override
-    public Quaternionf getRotation() {
-        return new Quaternionf(rotation);
+    public Quaternion getRotation() {
+        return new Quaternion(rotation);
     }
 
     @Override
-    public void setRotation(Quaternionf rotation) {
+    public void setRotation(Quaternion rotation) {
         this.rotation = rotation;
         recalculateViewMatrix();
     }
 
     @Override
-    public Vector3f getForward() {
-        return new Vector3f(0f, 0f, 1f).rotate(rotation);
+    public Vector3 getForward() {
+        return rotation.rotate(Vector3.forward);
     }
 
     @Override
-    public Vector3f getRight() {
-        return new Vector3f(0f, 1f, 0f).cross(getForward()).normalize();
+    public Vector3 getRight() {
+        return rotation.rotate(Vector3.right);
     }
 
     @Override
-    public Vector3f getUp() {
+    public Vector3 getUp() {
         return getForward().cross(getRight());
     }
 
     public void recalculateViewMatrix() {
-        viewMatrix = new Matrix4f().translate(position).rotate(rotation).invert();
-        viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
+        viewMatrix = new Matrix4().translate(position).rotate(rotation).inverse();
+        viewProjectionMatrix = new Matrix4(projectionMatrix).mul(viewMatrix);
     }
 
 }

@@ -1,23 +1,21 @@
 package de.arnomann.martin.blobby3d.render;
 
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 
 public interface Camera {
 
-    Matrix4f getProjectionMatrix();
-    Matrix4f getViewMatrix();
-    Matrix4f getViewProjectionMatrix();
+    Matrix4 getProjectionMatrix();
+    Matrix4 getViewMatrix();
+    Matrix4 getViewProjectionMatrix();
 
-    Vector3f getPosition();
-    void setPosition(Vector3f position);
-    Quaternionf getRotation();
-    void setRotation(Quaternionf rotation);
+    Vector3 getPosition();
+    void setPosition(Vector3 position);
+    Quaternion getRotation();
+    void setRotation(Quaternion rotation);
 
-    Vector3f getForward();
-    Vector3f getRight();
-    Vector3f getUp();
+    Vector3 getForward();
+    Vector3 getRight();
+    Vector3 getUp();
 
     void recalculateViewMatrix();
 

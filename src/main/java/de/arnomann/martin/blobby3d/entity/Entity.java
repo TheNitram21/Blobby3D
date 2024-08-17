@@ -6,16 +6,14 @@ import de.arnomann.martin.blobby3d.render.Mesh;
 import de.arnomann.martin.blobby3d.render.Renderer;
 import de.arnomann.martin.blobby3d.render.Shader;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import de.arnomann.martin.blobby3d.math.*;
 
 import java.util.Map;
 
 public abstract class Entity implements EventListener {
 
-    private Vector3f position;
-    private Quaternionf rotation;
+    private Vector3 position;
+    private Quaternion rotation;
     private Shader shader;
     private long id;
 
@@ -25,7 +23,7 @@ public abstract class Entity implements EventListener {
 
     private static long entityCount = 0;
 
-    public Entity(Vector3f position, Quaternionf rotation, Map<String, Object> parameters) {
+    public Entity(Vector3 position, Quaternion rotation, Map<String, Object> parameters) {
         this.parameters = parameters;
 
         this.position = position;
@@ -59,19 +57,19 @@ public abstract class Entity implements EventListener {
         return disabled;
     }
 
-    public void setPosition(Vector3f position) {
+    public void setPosition(Vector3 position) {
         this.position = position;
     }
 
-    public Vector3f getPosition() {
+    public Vector3 getPosition() {
         return position;
     }
 
-    public void setRotation(Quaternionf rotation) {
+    public void setRotation(Quaternion rotation) {
         this.rotation = rotation;
     }
 
-    public Quaternionf getRotation() {
+    public Quaternion getRotation() {
         return rotation;
     }
 
@@ -89,8 +87,8 @@ public abstract class Entity implements EventListener {
     public abstract void setTexture(ITexture texture);
     public abstract ITexture getTexture();
 
-    public Matrix4f getModelMatrix() {
-        return new Matrix4f().translate(position).rotate(rotation);
+    public Matrix4 getModelMatrix() {
+        return new Matrix4().translate(position).rotate(rotation);
     }
 
     public final Map<String, Object> getParameters() {

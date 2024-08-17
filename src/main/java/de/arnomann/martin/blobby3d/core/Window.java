@@ -4,7 +4,7 @@ import de.arnomann.martin.blobby3d.RunConfigurations;
 import de.arnomann.martin.blobby3d.event.*;
 import de.arnomann.martin.blobby3d.render.RenderAPI;
 import de.arnomann.martin.blobby3d.render.Renderer;
-import org.joml.Vector2i;
+import de.arnomann.martin.blobby3d.math.*;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -135,8 +135,8 @@ public class Window {
         return height;
     }
 
-    public Vector2i getSize() {
-        return new Vector2i(width, height);
+    public Vector2 getSize() {
+        return new Vector2(width, height);
     }
 
     public float getAspectRatio() {
