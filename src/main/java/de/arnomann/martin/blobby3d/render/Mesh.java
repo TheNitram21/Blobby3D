@@ -1,10 +1,13 @@
 package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
+import de.arnomann.martin.blobby3d.math.Vector3;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL33.*;
 
@@ -14,22 +17,17 @@ public class Mesh {
     private int vbo, tbo, nbo, ebo;
     private final boolean isDynamic;
 
-    private float[] vertices, textureCoords, normals;
-    private int[] indices;
-
     public Mesh(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
         this(vertices, textureCoords, normals, indices, false);
     }
 
     public Mesh(float[] vertices, float[] textureCoords, float[] normals, int[] indices,
                 boolean isDynamic) {
+        if(vertices.length % 3 != 0 || textureCoords.length % 2 != 0 || normals.length % 3 != 0 || indices.length % 3 != 0)
+            throw new IllegalArgumentException("Illegal input array length.");
+
         this.count = indices.length;
         this.isDynamic = isDynamic;
-
-        this.vertices = vertices;
-        this.textureCoords = textureCoords;
-        this.normals = normals;
-        this.indices = indices;
 
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
@@ -66,7 +64,7 @@ public class Mesh {
     }
 
     public void setVertices(float[] vertices) {
-        if(!isDynamic)
+        if(!isDynamic || vertices.length % 3 != 0)
             return;
 
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
@@ -79,7 +77,7 @@ public class Mesh {
     }
 
     public void setTextureCoords(float[] textureCoords) {
-        if(!isDynamic)
+        if(!isDynamic || textureCoords.length % 2 != 0)
             return;
 
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
@@ -92,7 +90,7 @@ public class Mesh {
     }
 
     public void setNormals(float[] normals) {
-        if(!isDynamic)
+        if(!isDynamic || normals.length % 3 != 0)
             return;
 
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
@@ -105,7 +103,7 @@ public class Mesh {
     }
 
     public void setIndices(int[] indices) {
-        if(!isDynamic)
+        if(!isDynamic || indices.length % 3 != 0)
             return;
 
         count = indices.length;

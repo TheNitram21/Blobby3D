@@ -67,7 +67,6 @@ public class EngineTest implements EventListener {
                 cameraRotation.x = Math.min(90f, Math.max(-90f, cameraRotation.x));
                 camera.setRotation(Quaternion.fromEulerAngles(-cameraRotation.x, -cameraRotation.y, 0f));
 
-                System.out.println(cameraRotation + " " + camera.getRotation());
                 Blobby3D.setCursorPosition(windowMid);
             }
         }
