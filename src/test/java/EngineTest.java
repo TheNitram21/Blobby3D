@@ -60,13 +60,16 @@ public class EngineTest implements EventListener {
 
             Vector2 cursorPos = Blobby3D.getCursorPosition();
             Vector2 windowMid = new Vector2(Blobby3D.getWindow().getSize().div(2f));
-            cameraRotation = cameraRotation.add(new Vector3(cursorPos.y - windowMid.y, cursorPos.x - windowMid.x,
-                    0f).mul(lookSensitivity));
-            cameraRotation.x = Math.min(90f, Math.max(-90f, cameraRotation.x));
-            camera.setRotation(Quaternion.fromEulerAngles(-cameraRotation.x, -cameraRotation.y, 0f));
+            if(!cursorPos.equals(windowMid))
+            {
+                cameraRotation = cameraRotation.add(new Vector3(cursorPos.y - windowMid.y, cursorPos.x - windowMid.x,
+                        0f).mul(lookSensitivity));
+                cameraRotation.x = Math.min(90f, Math.max(-90f, cameraRotation.x));
+                camera.setRotation(Quaternion.fromEulerAngles(-cameraRotation.x, -cameraRotation.y, 0f));
 
-            System.out.println(cameraRotation + " " + camera.getRotation());
-            Blobby3D.setCursorPosition(windowMid);
+                System.out.println(cameraRotation + " " + camera.getRotation());
+                Blobby3D.setCursorPosition(windowMid);
+            }
         }
     }
 
