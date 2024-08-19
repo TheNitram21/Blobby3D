@@ -60,6 +60,10 @@ public class Vector4 {
         return (float) Math.sqrt(x * x + y * y + z * z + w * w);
     }
 
+    public float lengthSquared() {
+        return x * x + y * y + z * z + w * w;
+    }
+
     public Vector4 normalized() {
         float length = length();
         if(length == 0)

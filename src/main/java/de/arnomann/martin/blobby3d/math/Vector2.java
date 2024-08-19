@@ -54,6 +54,10 @@ public class Vector2 {
         return (float) Math.sqrt(x * x + y * y);
     }
 
+    public float lengthSquared() {
+        return x * x + y * y;
+    }
+
     public Vector2 normalized() {
         float length = length();
         if(length == 0)

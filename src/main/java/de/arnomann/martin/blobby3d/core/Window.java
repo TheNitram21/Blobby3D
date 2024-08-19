@@ -19,6 +19,7 @@ public class Window {
     private int width;
     private int height;
     private int maxFramerate;
+    private int multiSampling;
     private boolean vSyncEnabled;
     private boolean wireframe;
 
@@ -29,6 +30,7 @@ public class Window {
         this.width = runConfig.width;
         this.height = runConfig.height;
         this.maxFramerate = runConfig.maxFramerate;
+        this.multiSampling = runConfig.multiSampling;
         this.vSyncEnabled = runConfig.vSyncEnabled;
         this.wireframe = runConfig.wireframe;
 
@@ -48,6 +50,8 @@ public class Window {
             GL.createCapabilities();
 
             glEnable(GL_TEXTURE_2D);
+            if(multiSampling != 0)
+                glEnable(GL_MULTISAMPLE);
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);
@@ -71,6 +75,8 @@ public class Window {
     private long createWindow() {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        if(multiSampling > 0)
+            glfwWindowHint(GLFW_SAMPLES, multiSampling);
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

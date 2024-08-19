@@ -5,10 +5,11 @@ import java.util.Objects;
 public class Vector3 {
 
     public static final Vector3 zero = new Vector3();
+    public static final Vector3 one = new Vector3(1, 1, 1);
     public static final Vector3 up = new Vector3(0, 1, 0);
     public static final Vector3 down = new Vector3(0, -1, 0);
     public static final Vector3 left = new Vector3(-1, 0, 0);
-    public static final Vector3 right = new Vector3(1, 0,0 );
+    public static final Vector3 right = new Vector3(1, 0, 0 );
     public static final Vector3 forward = new Vector3(0, 0, 1);
     public static final Vector3 back = new Vector3(0, 0, -1);
 
@@ -64,6 +65,10 @@ public class Vector3 {
 
     public float length() {
         return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public float lengthSquared() {
+        return x * x + y * y + z * z;
     }
 
     public Vector3 normalized() {

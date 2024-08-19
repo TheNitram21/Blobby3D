@@ -1,5 +1,7 @@
 package de.arnomann.martin.blobby3d.level;
 
+import de.arnomann.martin.blobby3d.physics.Collider;
+import de.arnomann.martin.blobby3d.physics.CollisionMesh;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import de.arnomann.martin.blobby3d.math.*;
 
@@ -8,10 +10,11 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public class Block {
+public class Block implements Collider {
 
     private static int vbo, tbo, nbo;
     private int ebo;
+    private static CollisionMesh collisionMesh;
 
     public Vector3 position;
     public Quaternion rotation;
@@ -159,6 +162,8 @@ public class Block {
             nbo = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, nbo);
             glBufferData(GL_ARRAY_BUFFER, normals, GL_STATIC_DRAW);
+
+            collisionMesh = new CollisionMesh(vertices, normals);
         }
     }
 
@@ -186,8 +191,20 @@ public class Block {
         return ebo;
     }
 
+    public Vector3 getPosition() {
+        return position;
+    }
+
+    public Vector3 getScale() {
+        return dimensions;
+    }
+
     public Matrix4 getModelMatrix() {
         return new Matrix4().translate(position).scale(dimensions).rotate(rotation);
+    }
+
+    public CollisionMesh getCollisionMesh() {
+        return collisionMesh;
     }
 
 }
