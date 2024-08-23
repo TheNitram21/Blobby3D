@@ -44,9 +44,10 @@ public class Matrix4 {
                 0f, 0f, 0f, 1f);
     }
 
-    public static Matrix4 perspective(float fovx, float fovy, float near, float far) {
-        return new Matrix4((float) (1f / Math.tan(fovx * 0.5f)), 0f, 0f, 0f,
-                0f, (float) (2f / Math.tan(fovy * 0.5f)), 0f, 0f,
+    public static Matrix4 perspective(float fovy, float aspectRatio, float near, float far) {
+        float tanHalfFov = (float) Math.tan(fovy * 0.5f);
+        return new Matrix4(1f / (aspectRatio * tanHalfFov), 0f, 0f, 0f,
+                0f, 1f / tanHalfFov, 0f, 0f,
                 0f, 0f, -(far + near) / (far - near), -(2f * far * near) / (far - near),
                 0f, 0f, -1f, 0f);
     }

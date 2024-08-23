@@ -30,7 +30,7 @@ public class EngineTest implements EventListener {
     public void onStart(StartEvent event) {
         Blobby3D.getWindow().setVSyncEnabled(false);
 
-        camera = new PerspectiveCamera(90, Blobby3D.getWindow().getAspectRatio(), 0.01f, 1000f);
+        camera = new PerspectiveCamera(70, Blobby3D.getWindow().getAspectRatio(), 0.01f, 1000f);
         camera.setPosition(new Vector3(0f, 0f, 0f));
 
         Renderer.setCamera(camera);
