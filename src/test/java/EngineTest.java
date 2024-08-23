@@ -77,7 +77,7 @@ public class EngineTest implements EventListener {
 //        System.out.println("Time for collision tests: " + (System.nanoTime() - startTime) / 1000000f + "ms");
 
         if(!Blobby3D.getCursorVisible()) {
-            float moveSpeed = 3f * (float) event.deltaTime;
+            float moveSpeed = (Input.keyPressed(Input.KEY_LEFT_SHIFT) ? 5f : 3f) * (float) event.deltaTime;
             if(Input.keyPressed(Input.KEY_W))
                 camera.setPosition(camera.getPosition().add(camera.getForward().mul(moveSpeed)));
             if(Input.keyPressed(Input.KEY_S))
@@ -86,7 +86,7 @@ public class EngineTest implements EventListener {
                 camera.setPosition(camera.getPosition().add(camera.getRight().mul(-moveSpeed)));
             if(Input.keyPressed(Input.KEY_D))
                 camera.setPosition(camera.getPosition().add(camera.getRight().mul(moveSpeed)));
-            if(Input.keyPressed(Input.KEY_LEFT_SHIFT))
+            if(Input.keyPressed(Input.KEY_SPACE))
                 camera.setPosition(camera.getPosition().add(new Vector3(0f, moveSpeed, 0f)));
             if(Input.keyPressed(Input.KEY_LEFT_CONTROL))
                 camera.setPosition(camera.getPosition().add(new Vector3(0f, -moveSpeed, 0f)));
