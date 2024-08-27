@@ -3,7 +3,7 @@ package de.arnomann.martin.blobby3d.render.texture;
 import de.arnomann.martin.blobby3d.core.Blobby3D;
 import de.arnomann.martin.blobby3d.render.RenderAPI;
 
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public interface ITexture {
 

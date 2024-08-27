@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public class Blobby3D {
 

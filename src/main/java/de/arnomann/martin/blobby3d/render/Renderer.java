@@ -10,7 +10,7 @@ import de.arnomann.martin.blobby3d.math.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public class Renderer {
 

@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryStack;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL46.*;
 
 public class Shader {
 

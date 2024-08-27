@@ -8,7 +8,7 @@ import de.arnomann.martin.blobby3d.math.*;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Window {
