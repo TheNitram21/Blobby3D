@@ -5,63 +5,63 @@
             "Position": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Rotation": { "X": "0.0", "Y": "30.0", "Z": "45.0" },
             "Dimensions": { "X": "1.0", "Y": "1.0", "Z": "1.0" },
-            "Texture": "measure",
+            "Texture": "up",
             "Faces": [ true, true, true, true, true, true ]
         },
         {
             "Position": { "X": "-2.0", "Y": "1.5", "Z": "1.0" },
             "Rotation": { "X": "60.0", "Y": "45.0", "Z": "30.0" },
             "Dimensions": { "X": "1.0", "Y": "1.0", "Z": "1.0" },
-            "Texture": "orange",
+            "Texture": "up",
             "Faces": [ true, true, true, true, true, true ]
         },
         {
             "Position": { "X": "0.75", "Y": "-0.5", "Z": "-2.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "1.0", "Y": "1.0", "Z": "1.0" },
-            "Texture": "orange",
+            "Texture": "up",
             "Faces": [ true, true, true, true, true, true ]
         },
         {
             "Position": { "X": "0.0", "Y": "-1.5", "Z": "0.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "15.0", "Y": "1.0", "Z": "15.0" },
-            "Texture": "white",
+            "Texture": "measure",
             "Faces": [ true, false, false, false, false, false ]
         },
         {
             "Position": { "X": "0.0", "Y": "3.5", "Z": "0.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "15.0", "Y": "1.0", "Z": "15.0" },
-            "Texture": "white",
+            "Texture": "measure",
             "Faces": [ false, true, false, false, false, false ]
         },
         {
             "Position": { "X": "0.0", "Y": "1.0", "Z": "-8.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "15.0", "Y": "4.0", "Z": "1.0" },
-            "Texture": "white",
+            "Texture": "measure",
             "Faces": [ false, false, false, false, false, true ]
         },
         {
             "Position": { "X": "0.0", "Y": "1.0", "Z": "8.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "15.0", "Y": "4.0", "Z": "1.0" },
-            "Texture": "white",
+            "Texture": "measure",
             "Faces": [ false, false, false, false, true, false ]
         },
         {
             "Position": { "X": "-8.0", "Y": "1.0", "Z": "0.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "1.0", "Y": "4.0", "Z": "15.0" },
-            "Texture": "white",
+            "Texture": "measure",
             "Faces": [ false, false, false, true, false, false ]
         },
         {
             "Position": { "X": "8.0", "Y": "1.0", "Z": "0.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
             "Dimensions": { "X": "1.0", "Y": "4.0", "Z": "15.0" },
-            "Texture": "white",
+            "Texture": "measure",
             "Faces": [ false, false, true, false, false, false ]
         },
         {

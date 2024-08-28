@@ -4,6 +4,7 @@ import de.arnomann.martin.blobby3d.physics.Collider;
 import de.arnomann.martin.blobby3d.physics.CollisionMesh;
 import de.arnomann.martin.blobby3d.render.texture.ITexture;
 import de.arnomann.martin.blobby3d.math.*;
+import de.arnomann.martin.blobby3d.render.texture.TextureData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,8 @@ import static org.lwjgl.opengl.GL46.*;
 
 public class Block implements Collider {
 
-    private static int vbo, tbo, nbo;
-    private int ebo;
+    private static int vbo, nbo;
+    private int tbo, ebo;
     private static CollisionMesh collisionMesh;
 
     public Vector3 position;
@@ -32,6 +33,67 @@ public class Block implements Collider {
         this.rotation = rotation;
         this.dimensions = dimensions;
         this.texture = texture;
+
+        float[] textureCoords;
+        if(texture.getData().stretch == TextureData.StretchMode.FIT) {
+            textureCoords = new float[]{
+                    1f, 1f, // 0
+                    0f, 1f, // 1
+                    0f, 0f, // 2
+                    1f, 0f, // 3
+                    0f, 1f, // 4
+                    1f, 1f, // 5
+                    1f, 0f, // 6
+                    0f, 0f, // 7
+                    0f, 1f, // 8
+                    1f, 1f, // 9
+                    1f, 0f, // 10
+                    0f, 0f, // 11
+                    1f, 1f, // 12
+                    0f, 1f, // 13
+                    0f, 0f, // 14
+                    1f, 0f, // 15
+                    0f, 0f, // 16
+                    0f, 1f, // 17
+                    1f, 1f, // 18
+                    1f, 0f, // 19
+                    1f, 0f, // 20
+                    1f, 1f, // 21
+                    0f, 1f, // 22
+                    0f, 0f  // 23
+            };
+        } else {
+            textureCoords = new float[]{
+                    dimensions.x, dimensions.y, // 0
+                    0f, dimensions.y, // 1
+                    0f, 0f, // 2
+                    dimensions.x, 0f, // 3
+                    0f, dimensions.y, // 4
+                    dimensions.x, dimensions.y, // 5
+                    dimensions.x, 0f, // 6
+                    0f, 0f, // 7
+                    0f, dimensions.y, // 8
+                    dimensions.z, dimensions.y, // 9
+                    dimensions.z, 0f, // 10
+                    0f, 0f, // 11
+                    dimensions.z, dimensions.y, // 12
+                    0f, dimensions.y, // 13
+                    0f, 0f, // 14
+                    dimensions.z, 0f, // 15
+                    0f, 0f, // 16
+                    0f, dimensions.z, // 17
+                    dimensions.x, dimensions.z, // 18
+                    dimensions.x, 0f, // 19
+                    dimensions.x, 0f, // 20
+                    dimensions.x, dimensions.z, // 21
+                    0f, dimensions.z, // 22
+                    0f, 0f  // 23
+            };
+        }
+
+        tbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, tbo);
+        glBufferData(GL_ARRAY_BUFFER, textureCoords, GL_STATIC_DRAW);
 
         List<Integer> indices = new ArrayList<>();
         if(faces[0])    // TOP
@@ -84,32 +146,6 @@ public class Block implements Collider {
                      0.5f,  0.5f,  0.5f, // 22
                     -0.5f,  0.5f,  0.5f  // 23
             };
-            float[] textureCoords = new float[] {
-                    0f, 0f, // 0
-                    0f, 1f, // 1
-                    1f, 1f, // 2
-                    1f, 0f, // 3
-                    0f, 1f, // 4
-                    1f, 1f, // 5
-                    1f, 0f, // 6
-                    0f, 0f, // 7
-                    0f, 0f, // 8
-                    0f, 1f, // 9
-                    1f, 1f, // 10
-                    1f, 0f, // 11
-                    0f, 1f, // 12
-                    1f, 1f, // 13
-                    1f, 0f, // 14
-                    0f, 0f, // 15
-                    0f, 0f, // 16
-                    0f, 1f, // 17
-                    1f, 1f, // 18
-                    1f, 0f, // 19
-                    0f, 1f, // 20
-                    1f, 1f, // 21
-                    1f, 0f, // 22
-                    0f, 0f  // 23
-            };
             float[] normals = new float[] {
                      0f,  0f, -1f, // 0   FRONT & BACK
                      0f,  0f, -1f, // 1
@@ -136,28 +172,10 @@ public class Block implements Collider {
                      0f,  1f,  0f, // 22
                      0f,  1f,  0f  // 23
             };
-            int[] indices = new int[] {
-                    0,  1,  2,
-                    0,  2,  3,
-                    12, 8,  11,
-                    12, 11, 15,
-                    5,  4,  7,
-                    5,  7,  6,
-                    13, 14, 9,
-                    9,  14, 10,
-                    23, 18, 22,
-                    19, 18, 23,
-                    16, 21, 17,
-                    20, 21, 16
-            };
 
             vbo = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
-
-            tbo = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, tbo);
-            glBufferData(GL_ARRAY_BUFFER, textureCoords, GL_STATIC_DRAW);
 
             nbo = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, nbo);

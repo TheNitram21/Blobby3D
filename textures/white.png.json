@@ -1,3 +1,4 @@
 {
-    "FilterMode": "NEAREST"
+    "FilterMode": "NEAREST",
+    "Stretch": "FIT"
 }

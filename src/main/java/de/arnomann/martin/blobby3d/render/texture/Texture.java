@@ -18,9 +18,12 @@ public class Texture implements ITexture {
 
     private int id;
     private int width, height;
+    private TextureData data;
 
     public Texture(String filename) {
-        TextureData data = TextureData.parseTextureData(filename);
+        Blobby3D.getLogger().debug("Loading texture \"" + filename + "\"");
+
+        data = TextureData.parseTextureData(filename);
         if(data == null) {
             Blobby3D.getLogger().error("Couldn't load texture \"" + filename + "\": Couldn't load texture data!");
             return;
@@ -30,8 +33,10 @@ public class Texture implements ITexture {
             id = glGenTextures();
             glBindTexture(GL_TEXTURE_2D, id);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, data.stretch == TextureData.StretchMode.CLAMP ?
+                    GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, data.stretch == TextureData.StretchMode.CLAMP ?
+                    GL_CLAMP_TO_EDGE : GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, data.linearFiltering ? GL_LINEAR : GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, data.linearFiltering ? GL_LINEAR : GL_NEAREST);
 
@@ -94,6 +99,11 @@ public class Texture implements ITexture {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public TextureData getData() {
+        return data;
     }
 
     @Override

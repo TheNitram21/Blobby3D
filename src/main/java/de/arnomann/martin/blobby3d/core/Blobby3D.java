@@ -90,6 +90,7 @@ public class Blobby3D {
     }
 
     public static void loadEntities(String entitiesPath) {
+        logger.debug("Loading entities.json");
         JSONObject json = new JSONObject(readFile(entitiesPath));
 
         for(Object entityObject : json.getJSONArray("Entities")) {
@@ -110,15 +111,15 @@ public class Blobby3D {
         return entityData;
     }
 
-    public static ITexture getTexture(String filename) {
-        filename += ".png";
+    public static ITexture getTexture(String name) {
+        name += ".png";
 
-        if(cachedTextures.containsKey(filename)) {
-            return cachedTextures.get(filename);
+        if(cachedTextures.containsKey(name)) {
+            return cachedTextures.get(name);
         }
 
-        ITexture texture = loadTexture(filename);
-        cachedTextures.put(filename, texture);
+        ITexture texture = loadTexture(name);
+        cachedTextures.put(name, texture);
         return texture;
     }
 

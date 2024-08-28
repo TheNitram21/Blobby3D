@@ -10,6 +10,7 @@ public interface ITexture {
     int getWidth();
     int getHeight();
     int getId();
+    TextureData getData();
     void bind(int sampler);
     default void unbind() {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL)

@@ -64,6 +64,7 @@ public class Shader {
             glAttachShader(programId, fragId);
             glBindAttribLocation(programId, 0, "in_Position");
             glBindAttribLocation(programId, 1, "in_TextureCoords");
+            glBindAttribLocation(programId, 2, "in_Normal");
             glLinkProgram(programId);
             glValidateProgram(programId);
 
