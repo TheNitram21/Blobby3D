@@ -127,7 +127,7 @@ public class Logger {
     public void error(String message, Throwable e) {
         if(loggingTypes[ERROR.ordinal()]) {
             send(ERROR, message);
-            e.printStackTrace();
+            send(ERROR, e.getMessage());
         }
     }
 
@@ -139,7 +139,7 @@ public class Logger {
     public void fatal(String message, Throwable e) {
         if(loggingTypes[FATAL.ordinal()]) {
             send(FATAL, message);
-            e.printStackTrace();
+            send(FATAL, e.getMessage());
         }
 
         Blobby3D.stop();

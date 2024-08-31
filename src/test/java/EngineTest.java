@@ -2,8 +2,8 @@ import de.arnomann.martin.blobby3d.RunConfigurations;
 import de.arnomann.martin.blobby3d.core.Blobby3D;
 import de.arnomann.martin.blobby3d.core.Input;
 import de.arnomann.martin.blobby3d.event.*;
-import de.arnomann.martin.blobby3d.level.Block;
 import de.arnomann.martin.blobby3d.level.LevelLoader;
+import de.arnomann.martin.blobby3d.logging.Logger;
 import de.arnomann.martin.blobby3d.math.*;
 import de.arnomann.martin.blobby3d.render.Camera;
 import de.arnomann.martin.blobby3d.render.PerspectiveCamera;
@@ -25,6 +25,7 @@ public class EngineTest implements EventListener {
 
     @Override
     public void onStart(StartEvent event) {
+        Blobby3D.getLogger().enable(Logger.LoggingType.DEBUG);
         Blobby3D.getWindow().setVSyncEnabled(false);
 
         camera = new PerspectiveCamera(70, Blobby3D.getWindow().getAspectRatio(), 0.01f, 1000f);

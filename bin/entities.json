@@ -10,6 +10,14 @@
                 "Linear": "float",
                 "Quadratic": "float"
             }
+        },
+        {
+            "ClassName": "DynamicProp",
+            "InternalClassName": "de.arnomann.martin.blobby3d.entity.DynamicProp",
+            "Parameters": {
+                "Name": "string",
+                "Model": "string"
+            }
         }
     ]
 }

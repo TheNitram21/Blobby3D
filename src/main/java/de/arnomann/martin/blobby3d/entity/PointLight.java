@@ -13,8 +13,9 @@ public class PointLight extends Entity {
     private float linear;
     private float quadratic;
 
-    public PointLight(Vector3 position, Quaternion rotation, Map<String, Object> parameters) {
-        super(position, rotation, parameters);
+    public PointLight(Vector3 position, Quaternion rotation, Vector3 scale,
+                      Map<String, Object> parameters) {
+        super(position, rotation, scale, parameters);
 
         color = (Vector3) parameters.get("Color");
         constant = (float) parameters.get("Constant");
@@ -37,6 +38,9 @@ public class PointLight extends Entity {
     public float getQuadratic() {
         return quadratic;
     }
+
+    @Override
+    public void beforeRender() {}
 
     @Override
     public void setMesh(Mesh mesh) {}

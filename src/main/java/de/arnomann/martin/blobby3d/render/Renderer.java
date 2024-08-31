@@ -128,6 +128,8 @@ public class Renderer {
         if(entity.getMesh() == null)
             return;
 
+        entity.beforeRender();
+
         entity.getShader().bind();
         entity.getTexture().bind(0);
         entity.getShader().setUniform1i("u_Texture", 0);

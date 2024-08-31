@@ -14,6 +14,7 @@ public abstract class Entity implements EventListener {
 
     private Vector3 position;
     private Quaternion rotation;
+    private Vector3 scale;
     private Shader shader;
     private long id;
 
@@ -23,11 +24,13 @@ public abstract class Entity implements EventListener {
 
     private static long entityCount = 0;
 
-    public Entity(Vector3 position, Quaternion rotation, Map<String, Object> parameters) {
+    public Entity(Vector3 position, Quaternion rotation, Vector3 scale,
+                  Map<String, Object> parameters) {
         this.parameters = parameters;
 
         this.position = position;
         this.rotation = rotation;
+        this.scale = scale;
         this.shader = parameters.containsKey("Shader") ? Shader.createFromName((String) parameters.get("Shader")) :
                 Renderer.getDefaultShader();
 
@@ -73,6 +76,14 @@ public abstract class Entity implements EventListener {
         return rotation;
     }
 
+    public void setScale(Vector3 scale) {
+        this.scale = scale;
+    }
+
+    public Vector3 getScale() {
+        return scale;
+    }
+
     public Shader getShader() {
         return shader;
     }
@@ -81,6 +92,8 @@ public abstract class Entity implements EventListener {
         return id;
     }
 
+    public abstract void beforeRender();
+
     public abstract void setMesh(Mesh mesh);
     public abstract Mesh getMesh();
 
@@ -88,7 +101,7 @@ public abstract class Entity implements EventListener {
     public abstract ITexture getTexture();
 
     public Matrix4 getModelMatrix() {
-        return new Matrix4().translate(position).rotate(rotation);
+        return new Matrix4().translate(position).scale(scale).rotate(rotation);
     }
 
     public final Map<String, Object> getParameters() {
