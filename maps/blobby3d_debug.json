@@ -1,5 +1,5 @@
 {
-    "AmbientLight": { "R": "0.1", "G": "0.0", "B": "0.0" },
+    "AmbientLight": { "R": "0.0", "G": "0.05", "B": "0.1" },
     "Blocks": [
         {
             "Position": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
@@ -25,7 +25,7 @@
         {
             "Position": { "X": "0.0", "Y": "-1.5", "Z": "0.0" },
             "Rotation": { "X": "0.0", "Y": "0.0", "Z": "0.0" },
-            "Dimensions": { "X": "15.0", "Y": "1.0", "Z": "15.0" },
+            "Dimensions": { "X": "13.0", "Y": "1.0", "Z": "13.0" },
             "Texture": "measure",
             "Faces": [ true, false, false, false, false, false ]
         },
@@ -169,7 +169,7 @@
             "Rotation": { "X": "0.0", "Y": "90.0", "Z": "0.0" },
             "Scale": { "X": "10.0", "Y": "10.0", "Z": "10.0" },
             "Parameters": {
-                "Name": "SampleLight",
+                "Name": "Bunny",
                 "Model": "bunny"
             }
         }

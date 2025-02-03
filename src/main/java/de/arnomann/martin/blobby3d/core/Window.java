@@ -67,6 +67,14 @@ public class Window {
 
                 glViewport(0, 0, width, height);
             });
+            glfwSetWindowSizeCallback(windowId, (id, width, height) -> {
+                ListenerManager.callEvent(new WindowResizedEvent(this.width, this.height, width, height));
+
+                this.width = width;
+                this.height = height;
+
+                glViewport(0, 0, width, height);
+            });
         }
 
         glfwShowWindow(windowId);

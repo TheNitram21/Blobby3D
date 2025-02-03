@@ -11,7 +11,12 @@ public class PerspectiveCamera implements Camera {
     private Vector3 position;
     private Quaternion rotation;
 
+    private float near, far;
+
     public PerspectiveCamera(float fovy, float aspectRatio, float near, float far) {
+        this.near = near;
+        this.far = far;
+
         position = new Vector3();
         rotation = new Quaternion();
 
@@ -54,6 +59,11 @@ public class PerspectiveCamera implements Camera {
     @Override
     public void setRotation(Quaternion rotation) {
         this.rotation = rotation;
+        recalculateViewMatrix();
+    }
+
+    public void setFOV(float fovy, float aspectRatio) {
+        projectionMatrix = Matrix4.perspective((float) Math.toRadians(fovy), aspectRatio, near, far);
         recalculateViewMatrix();
     }
 

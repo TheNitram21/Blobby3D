@@ -20,7 +20,7 @@ public class EngineTest implements EventListener {
 
     public static void main(String[] args) {
         ListenerManager.registerEventListener(new EngineTest());
-        Blobby3D.run(RunConfigurations.createDefault("Blobby3D Test", 1280, 720, 8));
+        Blobby3D.run(RunConfigurations.createDefault("Blobby3D Test", 1280, 720, 4));
     }
 
     @Override
@@ -49,21 +49,27 @@ public class EngineTest implements EventListener {
 
         if(!Blobby3D.getCursorVisible()) {
             float moveSpeed = (Input.keyPressed(Input.KEY_LEFT_SHIFT) ? 5f : 3f) * (float) event.deltaTime;
+
+            Vector3 camForward = camera.getForward();
+            camForward.y = 0;
+            camForward = camForward.normalized();
+            Vector3 camRight = camera.getRight();
+            camRight.y = 0;
+            camRight = camRight.normalized();
+
+            Vector3 move = new Vector3();
             if(Input.keyPressed(Input.KEY_W))
-                camera.setPosition(camera.getPosition().add(camera.getForward().mul(moveSpeed)));
+                move = move.add(camForward);
             if(Input.keyPressed(Input.KEY_S))
-                camera.setPosition(camera.getPosition().add(camera.getForward().mul(-moveSpeed)));
-            if(Input.keyPressed(Input.KEY_A))
-                camera.setPosition(camera.getPosition().add(camera.getRight().mul(-moveSpeed)));
+                move = move.sub(camForward);
             if(Input.keyPressed(Input.KEY_D))
-                camera.setPosition(camera.getPosition().add(camera.getRight().mul(moveSpeed)));
-            if(Input.keyPressed(Input.KEY_SPACE))
-                camera.setPosition(camera.getPosition().add(new Vector3(0f, moveSpeed, 0f)));
-            if(Input.keyPressed(Input.KEY_LEFT_CONTROL))
-                camera.setPosition(camera.getPosition().add(new Vector3(0f, -moveSpeed, 0f)));
+                move = move.add(camRight);
+            if(Input.keyPressed(Input.KEY_A))
+                move = move.sub(camRight);
+            camera.setPosition(camera.getPosition().add(move.normalized().mul(moveSpeed)));
 
             Vector2 cursorPos = Blobby3D.getCursorPosition();
-            Vector2 windowMid = new Vector2(Blobby3D.getWindow().getSize().div(2f));
+            Vector2 windowMid = Blobby3D.getWindow().getSize().div(2f);
             if(!cursorPos.equals(windowMid))
             {
                 cameraRotation = cameraRotation.add(new Vector3(cursorPos.y - windowMid.y, cursorPos.x - windowMid.x,
@@ -91,9 +97,15 @@ public class EngineTest implements EventListener {
                 Blobby3D.getWindow().setWireframe(!Blobby3D.getWindow().isWireframe());
                 break;
             case Input.KEY_TAB:
+                Blobby3D.setCursorPosition(Blobby3D.getWindow().getSize().div(2f));
                 Blobby3D.setCursorVisible(!Blobby3D.getCursorVisible());
                 break;
         }
+    }
+
+    @Override
+    public void onWindowResized(WindowResizedEvent event) {
+        ((PerspectiveCamera) camera).setFOV(70, Blobby3D.getWindow().getAspectRatio());
     }
 
 }
