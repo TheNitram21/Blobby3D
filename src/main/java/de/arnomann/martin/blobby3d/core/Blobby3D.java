@@ -5,6 +5,7 @@ import de.arnomann.martin.blobby3d.entity.Entity;
 import de.arnomann.martin.blobby3d.level.Block;
 import de.arnomann.martin.blobby3d.level.Level;
 import de.arnomann.martin.blobby3d.logging.Logger;
+import de.arnomann.martin.blobby3d.physics.CollisionMesh;
 import de.arnomann.martin.blobby3d.render.Mesh;
 import de.arnomann.martin.blobby3d.render.RenderAPI;
 import de.arnomann.martin.blobby3d.render.Renderer;
@@ -35,6 +36,7 @@ public class Blobby3D {
     private static Logger logger;
     private static final Map<String, ITexture> cachedTextures = new HashMap<>();
     private static final Map<String, Mesh> cachedMeshes = new HashMap<>();
+    private static final Map<String, CollisionMesh> cachedCollisionMeshes = new HashMap<>();
     private static final Map<String, Map<String, String>> entityData = new HashMap<>();
 
     private static boolean cursorVisible;
@@ -238,6 +240,79 @@ public class Blobby3D {
 
     public static void resetCachedMeshes() {
         cachedMeshes.clear();
+    }
+
+    public static CollisionMesh getCollisionMesh(String name) {
+        name += ".obj";
+
+        if(cachedCollisionMeshes.containsKey(name)) {
+            return cachedCollisionMeshes.get(name);
+        }
+
+        CollisionMesh collisionMesh = loadCollisionMesh(name);
+        cachedCollisionMeshes.put(name, collisionMesh);
+        return collisionMesh;
+    }
+
+    private static CollisionMesh loadCollisionMesh(String filename) {
+        logger.debug("Loading collision mesh \"" + filename + "\"");
+
+        filename = MODELS_PATH + filename;
+        String[] content = readFile(filename).split("\n");
+
+        List<Vector3> verticesIn = new ArrayList<>();
+        List<Vector3> normalsIn = new ArrayList<>();
+        List<String[]> faces = new ArrayList<>();
+
+        for(String line : content) {
+            String[] lineSplit = line.split("#")[0].split(" ");
+            switch(lineSplit[0]) {
+                case "v":
+                    verticesIn.add(new Vector3(Float.parseFloat(lineSplit[1]), Float.parseFloat(lineSplit[2]),
+                            Float.parseFloat(lineSplit[3])));
+                    break;
+                case "vn":
+                    normalsIn.add(new Vector3(Float.parseFloat(lineSplit[1]), Float.parseFloat(lineSplit[2]),
+                            Float.parseFloat(lineSplit[3])));
+                    break;
+                case "f":
+                    faces.add(Arrays.copyOfRange(lineSplit, 1, 4));
+                    break;
+            }
+        }
+
+        List<Vector3> vertices = new ArrayList<>();
+        List<Vector3> normals = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        Map<String, Integer> seenVertices = new HashMap<>();
+        for(String[] face : faces) {
+            for(String v : face) {
+                if(seenVertices.containsKey(v)) {
+                    indices.add(seenVertices.get(v));
+                } else {
+                    String[] vertexSplit = v.split("/");
+                    vertices.add(verticesIn.get(Integer.parseInt(vertexSplit[0]) - 1));
+                    if(vertexSplit.length == 3) {
+                        normals.add(normalsIn.get(Integer.parseInt(vertexSplit[2]) - 1));
+                    }
+
+                    int index = seenVertices.size();
+                    seenVertices.put(v, index);
+                    indices.add(index);
+                }
+            }
+        }
+
+        List<Vector3> edges = new ArrayList<>();
+        for(int i = 0; i < indices.size() - 1; i++) {
+            edges.add(vertices.get(i + 1).sub(vertices.get(i)).normalized());
+        }
+
+        return new CollisionMesh(vertices, normals, edges);
+    }
+
+    public static void resetCachedCollisionMeshes() {
+        cachedCollisionMeshes.clear();
     }
 
     public static Entity instantiateEntity(String className, Vector3 position, Quaternion rotation,

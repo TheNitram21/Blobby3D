@@ -89,6 +89,10 @@ public class Vector3 {
         return new Vector3(x, y, z);
     }
 
+    public float largest() {
+        return Math.max(x, Math.max(y, z));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(this == obj)

@@ -1,5 +1,7 @@
 package de.arnomann.martin.blobby3d.physics;
 
+import de.arnomann.martin.blobby3d.core.Blobby3D;
+import de.arnomann.martin.blobby3d.level.Block;
 import de.arnomann.martin.blobby3d.math.*;
 
 import java.util.HashSet;
@@ -10,8 +12,8 @@ public class Physics {
     private Physics() {}
 
     public static boolean aabb(Vector3 centerA, Vector3 sizeA, Vector3 centerB, Vector3 sizeB) {
-        sizeA.div(2);
-        sizeB.div(2);
+        sizeA = sizeA.div(2);
+        sizeB = sizeB.div(2);
         Vector3 minA = centerA.sub(sizeA);
         Vector3 maxA = centerA.add(sizeA);
         Vector3 minB = centerB.sub(sizeB);
@@ -65,6 +67,21 @@ public class Physics {
         return new RayResult(false, null, 0f);
     }
 
+    public static boolean checkForWorldCollision(Collider collider) {
+        float colliderRadius = collider.getCollisionMesh().getRadius() * collider.getScale().largest();
+        Vector3 colliderPosition = collider.getPosition();
+        for(Block block : Blobby3D.getLevel().getBlocks()) {
+            float maxDistance = block.getCollisionMesh().getRadius() * block.getScale().largest() + colliderRadius;
+            if(block.getPosition().sub(colliderPosition).lengthSquared() > maxDistance * maxDistance)
+                continue;
+
+            if(colliding(collider, block))
+                return true;
+        }
+        return false;
+    }
+
+    // Implementation of SAT: Only for convex meshes!
     public static boolean colliding(Collider colliderA, Collider colliderB) {
         float radiusA = colliderA.getCollisionMesh().getRadius() * Math.max(colliderA.getScale().x, Math.max(
                 colliderA.getScale().y, colliderA.getScale().z));
@@ -73,23 +90,25 @@ public class Physics {
         if(colliderA.getPosition().sub(colliderB.getPosition()).lengthSquared() > (radiusA + radiusB) * (radiusA + radiusB))
             return false;
 
-        Set<Vector3> normals = new HashSet<>(colliderA.getCollisionMesh().getNormals());
-        normals.addAll(colliderB.getCollisionMesh().getNormals());
+        Set<Vector3> axes = new HashSet<>(colliderA.getCollisionMesh().getNormals());
+        axes.addAll(colliderB.getCollisionMesh().getNormals());
+        axes.addAll(colliderA.getCollisionMesh().getEdges());
+        axes.addAll(colliderB.getCollisionMesh().getEdges());
 
-        for(Vector3 normal : normals) {
+        for(Vector3 axis : axes) {
             float minA = Float.MAX_VALUE, maxA = Float.MIN_VALUE;
             float minB = Float.MAX_VALUE, maxB = Float.MIN_VALUE;
-            normal = normal.normalized();
+            axis = axis.normalized();
 
             for(Vector3 vertex : colliderA.getCollisionMesh().getVertices()) {
-                float projected = vertex.dot(normal);
+                float projected = vertex.add(colliderA.getPosition()).dot(axis);
                 if(projected < minA)
                     minA = projected;
                 if(projected > maxA)
                     maxA = projected;
             }
             for(Vector3 vertex : colliderB.getCollisionMesh().getVertices()) {
-                float projected = vertex.dot(normal);
+                float projected = vertex.add(colliderB.getPosition()).dot(axis);
                 if(projected < minB)
                     minB = projected;
                 if(projected > maxB)

@@ -1,7 +1,6 @@
 package de.arnomann.martin.blobby3d.render;
 
 import de.arnomann.martin.blobby3d.core.Blobby3D;
-import de.arnomann.martin.blobby3d.math.Vector3;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

@@ -181,7 +181,21 @@ public class Block implements Collider {
             glBindBuffer(GL_ARRAY_BUFFER, nbo);
             glBufferData(GL_ARRAY_BUFFER, normals, GL_STATIC_DRAW);
 
-            collisionMesh = new CollisionMesh(vertices, normals);
+            List<Vector3> verticesList = new ArrayList<>(), normalsList = new ArrayList<>();
+            for(int i = 0; i < vertices.length; i += 3) {
+                verticesList.add(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]));
+            }
+            for(int i = 0; i < normals.length; i += 3) {
+                normalsList.add(new Vector3(normals[i], normals[i + 1], normals[i + 2]));
+            }
+            collisionMesh = new CollisionMesh(verticesList, normalsList, List.of(
+                    Vector3.up,
+                    Vector3.down,
+                    Vector3.forward,
+                    Vector3.back,
+                    Vector3.left,
+                    Vector3.right
+            ));
         }
     }
 

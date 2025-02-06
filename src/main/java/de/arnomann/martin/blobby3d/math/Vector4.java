@@ -75,6 +75,10 @@ public class Vector4 {
         return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
     }
 
+    public float largest() {
+        return Math.max(x, Math.max(y, Math.max(z, w)));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(this == obj)
