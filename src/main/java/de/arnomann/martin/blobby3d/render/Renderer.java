@@ -179,6 +179,10 @@ public class Renderer {
         return defaultShader;
     }
 
+    public static void setBackgroundColor(Vector3 color) {
+        glClearColor(color.x, color.y, color.z, 1f);
+    }
+
     public static void setCamera(Camera camera) {
         Renderer.camera = camera;
     }
