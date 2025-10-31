@@ -166,16 +166,20 @@ public class Renderer {
     }
 
     public static void renderSprite(ITexture texture, Vector3 position, Vector2 size) {
+        renderSprite(texture, position, size, unlitShader);
+    }
+
+    public static void renderSprite(ITexture texture, Vector3 position, Vector2 size, Shader shader) {
         if(texture == null)
             return;
 
-        unlitShader.bind();
+        shader.bind();
         texture.bind(0);
-        unlitShader.setUniform1i("u_Texture", 0);
+        shader.setUniform1i("u_Texture", 0);
 
         Quaternion rotation = camera.getRotation();
         Matrix4 modelMatrix = new Matrix4().translate(position).rotate(rotation).scale(new Vector3(size));
-        unlitShader.setUniformMatrix4("u_ModelViewProjectionMatrix", camera.getViewProjectionMatrix().mul(modelMatrix));
+        shader.setUniformMatrix4("u_ModelViewProjectionMatrix", camera.getViewProjectionMatrix().mul(modelMatrix));
 
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
