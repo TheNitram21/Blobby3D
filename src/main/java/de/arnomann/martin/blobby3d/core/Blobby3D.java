@@ -163,6 +163,9 @@ public class Blobby3D {
         List<String[]> faces = new ArrayList<>();
 
         for(String line : content) {
+            if(line.isEmpty() || line.charAt(0) == '#')
+                continue;
+
             String[] lineSplit = line.split("#")[0].split(" ");
             switch(lineSplit[0]) {
                 case "v":
@@ -189,8 +192,9 @@ public class Blobby3D {
         Map<String, Integer> seenVertices = new HashMap<>();
         for(String[] face : faces) {
             for(String v : face) {
-                if(seenVertices.containsKey(v)) {
-                    indices.add(seenVertices.get(v));
+                Integer index = seenVertices.get(v);
+                if(index != null) {
+                    indices.add(index);
                 } else {
                     String[] vertexSplit = v.split("/");
                     vertices.add(verticesIn.get(Integer.parseInt(vertexSplit[0]) - 1));
@@ -203,9 +207,8 @@ public class Blobby3D {
                         normals.add(normalsIn.get(Integer.parseInt(vertexSplit[2]) - 1));
                     }
 
-                    int index = seenVertices.size();
-                    seenVertices.put(v, index);
-                    indices.add(index);
+                    seenVertices.put(v, seenVertices.size());
+                    indices.add(seenVertices.size() - 1);
                 }
             }
         }

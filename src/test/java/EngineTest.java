@@ -66,6 +66,10 @@ public class EngineTest implements EventListener {
                 move = move.add(camRight);
             if(Input.keyPressed(Input.KEY_A))
                 move = move.sub(camRight);
+            if(Input.keyPressed(Input.KEY_SPACE))
+                move = move.add(Vector3.up);
+            if(Input.keyPressed(Input.KEY_LEFT_CONTROL))
+                move = move.sub(Vector3.down);
             camera.setPosition(camera.getPosition().add(move.normalized().mul(moveSpeed)));
 
             Vector2 cursorPos = Blobby3D.getCursorPosition();

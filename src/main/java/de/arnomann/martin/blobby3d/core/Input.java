@@ -181,6 +181,10 @@ public class Input {
             }
         });
 
+        glfwSetScrollCallback(Blobby3D.getWindow().getId(), (windowId, x, y) -> {
+            ListenerManager.callEvent(new MouseScrollEvent(x, y));
+        });
+
         glfwSetCursorPosCallback(Blobby3D.getWindow().getId(), (windowId, xPos, yPos) -> {
             ListenerManager.callEvent(new CursorPositionChangedEvent(new Vector2((float) xPos, (float) yPos)));
         });
