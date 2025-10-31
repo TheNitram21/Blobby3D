@@ -69,7 +69,7 @@ public class EngineTest implements EventListener {
             if(Input.keyPressed(Input.KEY_SPACE))
                 move = move.add(Vector3.up);
             if(Input.keyPressed(Input.KEY_LEFT_CONTROL))
-                move = move.sub(Vector3.down);
+                move = move.add(Vector3.down);
             camera.setPosition(camera.getPosition().add(move.normalized().mul(moveSpeed)));
 
             Vector2 cursorPos = Blobby3D.getCursorPosition();
@@ -88,7 +88,7 @@ public class EngineTest implements EventListener {
 
     @Override
     public void onRender(RenderEvent event) {
-        Renderer.renderSprite(Blobby3D.getTexture("measure"), new Vector3(0f, 5f, 0f));
+        Renderer.renderSprite(Blobby3D.getTexture("measure"), new Vector3(0f, 0f, 5f), Vector2.one.mul(0.5f));
     }
 
     @Override

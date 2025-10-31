@@ -45,12 +45,20 @@ public class Renderer {
 //                    -0.5f,  0.5f,
 //                     0.5f,  0.5f,
 //                     0.5f, -0.5f
-                    0f, 0f, 0f,
-                    1f, 0f, 0f,
-                    0f, 1f, 0f,
-                    1f, 0f, 0f,
-                    1f, 1f, 0f,
-                    0f, 1f, 0f
+
+//                    0f, 0f, 0f,
+//                    1f, 0f, 0f,
+//                    0f, 1f, 0f,
+//                    1f, 0f, 0f,
+//                    1f, 1f, 0f,
+//                    0f, 1f, 0f
+
+                    -0.5f, -0.5f, 0f,
+                     0.5f, -0.5f, 0f,
+                    -0.5f,  0.5f, 0f,
+                     0.5f, -0.5f, 0f,
+                     0.5f,  0.5f, 0f,
+                    -0.5f,  0.5f, 0f
             }, GL_STATIC_DRAW);
             quadTBO = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, quadTBO);
@@ -157,7 +165,7 @@ public class Renderer {
         glDrawElements(GL_TRIANGLES, entity.getMesh().getCount(), GL_UNSIGNED_INT, 0);
     }
 
-    public static void renderSprite(ITexture texture, Vector3 position) {
+    public static void renderSprite(ITexture texture, Vector3 position, Vector2 size) {
         if(texture == null)
             return;
 
@@ -165,8 +173,9 @@ public class Renderer {
         texture.bind(0);
         unlitShader.setUniform1i("u_Texture", 0);
 
-        unlitShader.setUniformMatrix4("u_ModelViewProjectionMatrix", new Matrix4(
-                camera.getViewProjectionMatrix()).mul(new Matrix4().translate(position).rotate(camera.getRotation())));
+        Quaternion rotation = camera.getRotation();
+        Matrix4 modelMatrix = new Matrix4().translate(position).rotate(rotation).scale(new Vector3(size));
+        unlitShader.setUniformMatrix4("u_ModelViewProjectionMatrix", camera.getViewProjectionMatrix().mul(modelMatrix));
 
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
