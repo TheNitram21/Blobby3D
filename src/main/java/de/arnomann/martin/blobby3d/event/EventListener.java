@@ -10,6 +10,7 @@ public interface EventListener {
     default void onKeyReleased(KeyReleasedEvent event) {}
     default void onMouseButtonPressed(MouseButtonPressedEvent event) {}
     default void onMouseButtonReleased(MouseButtonReleasedEvent event) {}
+    default void onMouseScroll(MouseScrollEvent event) {}
     default void onCursorPositionChanged(CursorPositionChangedEvent event) {}
     default void onWindowResized(WindowResizedEvent event) {}
 }
