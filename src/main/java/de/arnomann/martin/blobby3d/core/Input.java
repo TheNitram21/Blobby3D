@@ -140,7 +140,19 @@ public class Input {
             KEY_RIGHT_CONTROL = GLFW_KEY_RIGHT_CONTROL,
             KEY_RIGHT_ALT = GLFW_KEY_RIGHT_ALT,
             KEY_RIGHT_SUPER = GLFW_KEY_RIGHT_SUPER,
-            KEY_MENU = GLFW_KEY_MENU;
+            KEY_MENU = GLFW_KEY_MENU,
+            MOUSE_LEFT = GLFW_MOUSE_BUTTON_LEFT,
+            MOUSE_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
+            MOUSE_RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
+            MOUSE_LAST = GLFW_MOUSE_BUTTON_LAST,
+            MOUSE_1 = GLFW_MOUSE_BUTTON_1,
+            MOUSE_2 = GLFW_MOUSE_BUTTON_2,
+            MOUSE_3 = GLFW_MOUSE_BUTTON_3,
+            MOUSE_4 = GLFW_MOUSE_BUTTON_4,
+            MOUSE_5 = GLFW_MOUSE_BUTTON_5,
+            MOUSE_6 = GLFW_MOUSE_BUTTON_6,
+            MOUSE_7 = GLFW_MOUSE_BUTTON_7,
+            MOUSE_8 = GLFW_MOUSE_BUTTON_8;
 
     /**
      * Initializes the input.
