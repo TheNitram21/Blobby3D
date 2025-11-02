@@ -2,9 +2,12 @@ import de.arnomann.martin.blobby3d.RunConfigurations;
 import de.arnomann.martin.blobby3d.core.Blobby3D;
 import de.arnomann.martin.blobby3d.core.Input;
 import de.arnomann.martin.blobby3d.event.*;
+import de.arnomann.martin.blobby3d.level.Block;
 import de.arnomann.martin.blobby3d.level.LevelLoader;
 import de.arnomann.martin.blobby3d.logging.Logger;
 import de.arnomann.martin.blobby3d.math.*;
+import de.arnomann.martin.blobby3d.physics.Physics;
+import de.arnomann.martin.blobby3d.physics.Physics.RayResult;
 import de.arnomann.martin.blobby3d.render.Camera;
 import de.arnomann.martin.blobby3d.render.PerspectiveCamera;
 import de.arnomann.martin.blobby3d.render.Renderer;
@@ -104,6 +107,19 @@ public class EngineTest implements EventListener {
                 Blobby3D.setCursorPosition(Blobby3D.getWindow().getSize().div(2f));
                 Blobby3D.setCursorVisible(!Blobby3D.getCursorVisible());
                 break;
+        }
+    }
+
+    @Override
+    public void onMouseButtonPressed(MouseButtonPressedEvent event) {
+        if(event.key == Input.MOUSE_LEFT) {
+            RayResult result = Physics.raycastBlocks(camera.getPosition(), camera.getForward());
+            if(result.hit) {
+                Blobby3D.getLogger().info("Hit! " + result.hitDistance + " units away");
+                ((Block) result.collider).texture = Blobby3D.getTexture("white");
+            }
+            else
+                Blobby3D.getLogger().info("No hit");
         }
     }
 

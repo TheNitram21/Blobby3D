@@ -27,6 +27,10 @@ public class Vector3 {
         this(xy.x, xy.y, z);
     }
 
+    public Vector3(Vector4 xyz) {
+        this(xyz.x, xyz.y, xyz.z);
+    }
+
     public Vector3(float x, float y, float z) {
         this.x = x;
         this.y = y;
