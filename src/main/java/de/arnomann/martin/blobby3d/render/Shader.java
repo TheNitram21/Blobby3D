@@ -104,11 +104,38 @@ public class Shader {
         }
     }
 
+    public void setUniform3f(String name, float x, float y, float z, float w) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            if(location != -1) {
+                glUniform4f(location, x, y, z, w);
+            }
+        }
+    }
+
+    public void setUniformVector2(String name, Vector2 vector) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            if(location != -1) {
+                glUniform2f(location, vector.x, vector.y);
+            }
+        }
+    }
+
     public void setUniformVector3(String name, Vector3 vector) {
         if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
             int location = glGetUniformLocation(id, name);
             if(location != -1) {
                 glUniform3f(location, vector.x, vector.y, vector.z);
+            }
+        }
+    }
+
+    public void setUniformVector4(String name, Vector4 vector) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            if(location != -1) {
+                glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
             }
         }
     }
@@ -136,6 +163,26 @@ public class Shader {
             int location = glGetUniformLocation(id, name);
             if(location != -1) {
                 glUniform3i(location, x, y, z);
+            }
+        }
+    }
+
+    public void setUniform4i(String name, int x, int y, int z, int w) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            if(location != -1) {
+                glUniform4i(location, x, y, z, w);
+            }
+        }
+    }
+
+    public void setUniformMatrix2(String name, Matrix2 matrix) {
+        if(Blobby3D.getRenderAPI() == RenderAPI.OPENGL) {
+            int location = glGetUniformLocation(id, name);
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                if(location != -1) {
+                    glUniformMatrix2fv(location, false, matrix.toFloatBuffer());
+                }
             }
         }
     }
