@@ -101,7 +101,7 @@ public abstract class Entity implements EventListener {
     public abstract ITexture getTexture();
 
     public Matrix4 getModelMatrix() {
-        return new Matrix4().translate(position).scale(scale).rotate(rotation);
+        return new Matrix4().translate(position).rotate(rotation).scale(scale);
     }
 
     public final Map<String, Object> getParameters() {

@@ -232,7 +232,7 @@ public class Block implements Collider {
     }
 
     public Matrix4 getModelMatrix() {
-        return new Matrix4().translate(position).scale(dimensions).rotate(rotation);
+        return new Matrix4().translate(position).rotate(rotation).scale(dimensions);
     }
 
     public CollisionMesh getCollisionMesh() {
