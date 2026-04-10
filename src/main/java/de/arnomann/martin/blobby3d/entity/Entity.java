@@ -92,7 +92,8 @@ public abstract class Entity implements EventListener {
         return id;
     }
 
-    public abstract void beforeRender();
+    public void beforeRender() {}
+    public void updateShaderUniforms() {}
 
     public abstract void setMesh(Mesh mesh);
     public abstract Mesh getMesh();

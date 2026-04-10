@@ -40,9 +40,6 @@ public class PointLight extends Entity {
     }
 
     @Override
-    public void beforeRender() {}
-
-    @Override
     public void setMesh(Mesh mesh) {}
 
     @Override

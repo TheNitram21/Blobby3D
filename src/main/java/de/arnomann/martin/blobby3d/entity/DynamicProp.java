@@ -27,11 +27,6 @@ public class DynamicProp extends Entity {
     }
 
     @Override
-    public void beforeRender() {
-
-    }
-
-    @Override
     public void setMesh(Mesh mesh) {
         this.mesh = mesh;
     }

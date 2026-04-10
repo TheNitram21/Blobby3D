@@ -155,6 +155,8 @@ public class Renderer {
         entity.getShader().setUniformMatrix4("u_ModelMatrix", entity.getModelMatrix());
         entity.getShader().setUniformMatrix4("u_ModelViewProjectionMatrix", camera.getViewProjectionMatrix().mul(entity.getModelMatrix()));
 
+        entity.updateShaderUniforms();
+
         glBindBuffer(GL_ARRAY_BUFFER, entity.getMesh().getVBO());
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 12, 0);
         glBindBuffer(GL_ARRAY_BUFFER, entity.getMesh().getTBO());
